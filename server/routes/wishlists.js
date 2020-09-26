@@ -35,5 +35,61 @@ router.post("/", async (req, res) => {
     );
 });
 
+// PATCH route for updating wishlist name
+router.patch("/:wishlistID/name", async (req, res) => {
+  const { wishlistID } = req.params;
+  const { name } = req.body;
+
+  // Check for empty value
+  if (!name) {
+    return res.json({ status: 400, message: "Empty value", data: {} });
+  }
+
+  // Find wishlist by id
+  const wishlist = await Wishlist.findById(wishlistID);
+
+  // Update wishlist name
+  wishlist.name = name;
+
+  wishlist
+    .save()
+    .then((wishlist) =>
+      res.json({ status: 200, message: "Wishlist updated", data: wishlist })
+    );
+});
+
+// PATCH route for updating wishlist description
+router.patch("/:wishlistID/description", async (req, res) => {
+  const { wishlistID } = req.params;
+  const { description } = req.body;
+
+  // Check for empty value
+  if (!description) {
+    return res.json({ status: 400, message: "Empty value", data: {} });
+  }
+
+  // Find wishlist by id
+  const wishlist = await Wishlist.findById(wishlistID);
+
+  // Update description
+  wishlist.description = description;
+
+  wishlist
+    .save()
+    .then((wishlist) =>
+      res.json({ status: 200, message: "Wishlist updated", data: wishlist })
+    );
+});
+
+// DELETE route for deleting wishlist
+router.delete("/:wishlistID", async (req, res) => {
+  const { wishlistID } = req.params;
+
+  // Find wishlist by id
+  const wishlist = await Wishlist.findByIdAndDelete(wishlistID);
+
+  res.json({ status: 200, message: "Wishlist deleted", data: wishlist });
+});
+
 // Export router
 module.exports = router;
