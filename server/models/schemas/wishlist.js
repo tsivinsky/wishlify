@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
     },
     products: [
       {
-        name: String,
+        title: String,
         price: {
           amount: String,
           currency: String,
