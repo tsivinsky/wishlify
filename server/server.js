@@ -18,6 +18,7 @@ app.use("/wishlists", require("./middlewares/wishlists"));
 app.use("/", require("./routes/auth"));
 app.use("/users", require("./routes/users"));
 app.use("/wishlists", require("./routes/wishlists"));
+app.use("/wishlists", require("./routes/products"));
 
 // Connect to database
 require("./db");
