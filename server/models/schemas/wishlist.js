@@ -18,13 +18,8 @@ const schema = new mongoose.Schema(
     },
     products: [
       {
-        title: String,
-        price: {
-          amount: String,
-          currency: String,
-        },
-        url: String,
-        shop: String,
+        ref: "Product",
+        type: mongoose.Types.ObjectId,
       },
     ],
   },
