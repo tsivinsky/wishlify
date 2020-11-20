@@ -1,0 +1,23 @@
+$primary: #3a2e39;
+$secondary: #e0e0e0;
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  font-family: Helvetica;
+}
+
+html,
+body,
+#root,
+#root > div {
+  height: 100%;
+}
+
+#root > div {
+  padding: 10px;
+}
+
+@import "./partials/header";
