@@ -1,0 +1,11 @@
+[
+  {
+    "name": "amazon",
+    "selectors": {
+      "title": ["span#productTitle"],
+      "price": ["span#priceblock_ourprice", "span.a-color-price"],
+      "image": ["#landingImage"],
+      "shipping": ["span#ourprice_shippingmessage > span"]
+    }
+  }
+]
