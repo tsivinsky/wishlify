@@ -10,7 +10,7 @@ router.use("/:wishlistID", async (req, res, next) => {
   const wishlist = await Wishlist.findById(wishlistID);
 
   if (!wishlist) {
-    return res.json({ status: 404, message: "Wishlist not found", data: {} });
+    return res.status(404).send("Wishlist not found");
   }
 
   next();

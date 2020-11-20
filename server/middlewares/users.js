@@ -10,7 +10,7 @@ router.use("/:userID", async (req, res, next) => {
   const user = await User.findById(userID);
 
   if (!user) {
-    return res.json({ status: 404, message: "User not found", data: {} });
+    return res.status(404).send("User not found");
   }
 
   next();

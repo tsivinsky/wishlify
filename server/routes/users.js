@@ -1,6 +1,6 @@
 // Require dependencies
 const router = require("express").Router();
-const { default: validator } = require("validator");
+const validator = require("validator");
 const User = require("../models/User");
 const Wishlist = require("../models/Wishlist");
 
@@ -11,68 +11,42 @@ router.get("/:userID", async (req, res) => {
   // Find user by id
   const user = await User.findById(userID);
 
-  res.json({ status: 200, message: "User found", data: user });
+  res.status(200).json(user);
 });
 
-// PATCH route for editing user's name
-router.patch("/:userID/name", async (req, res) => {
+// PATCH route for updating user's data
+router.patch("/:userID", async (req, res) => {
   const { userID } = req.params;
-  const { name } = req.body;
+  const { name, email } = req.body;
 
-  // Check for empty value
-  if (!name) {
-    return res.json({ status: 400, message: "Empty value", data: {} });
+  // Check req.body keys' length
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).send("Empty value");
   }
 
   // Find user by id
   const user = await User.findById(userID);
 
-  // Update user's name
-  user.name = name;
-
-  user
-    .save()
-    .then((user) =>
-      res.json({ status: 200, message: "User updated", data: user })
-    );
-});
-
-// PATCH route for editing user's email
-router.patch("/:userID/email", async (req, res) => {
-  const { userID } = req.params;
-  const { email } = req.body;
-
-  // Check for empty value
-  if (!email) {
-    return res.json({ status: 400, message: "Empty value", data: {} });
+  // Update name
+  if (name) {
+    user.name = name;
   }
-
-  // Check if email is invalid
-  if (!validator.isEmail(email)) {
-    return res.json({ status: 400, message: "Invalid email", data: {} });
-  }
-
-  // Check if this email already registered
-  const emailTaken = await User.findOne({ email });
-  if (emailTaken) {
-    return res.json({
-      status: 400,
-      message: "This email already registered",
-      data: {},
-    });
-  }
-
-  // Find user by id
-  const user = await User.findById(userID);
 
   // Update email
-  user.email = email;
+  if (email) {
+    // Check if this email already exists in database
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).send("This email already registered");
+    }
 
-  user
-    .save()
-    .then((user) =>
-      res.json({ status: 200, message: "User updated", data: user })
-    );
+    user.email = email;
+  }
+
+  // Update user in database
+  const updatedUser = await user.save();
+
+  res.status(200).json(updatedUser);
 });
 
 // GET route for getting all user's wishlists
@@ -80,9 +54,9 @@ router.get("/:userID/wishlists", async (req, res) => {
   const { userID } = req.params;
 
   // Find all wishlists by owner property
-  const wishlists = await Wishlist.find({ owner: userID });
+  const wishlists = await Wishlist.find({ owner: userID }).populate("products");
 
-  res.json({ status: 200, message: "Wishlists found", data: wishlists });
+  res.status(200).json(wishlists);
 });
 
 // Export router
