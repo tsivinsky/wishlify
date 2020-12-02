@@ -7,7 +7,9 @@ router.get("/:wishlistID", async (req, res) => {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID).populate("products");
+  const wishlist = await Wishlist.findById(wishlistID)
+    .populate("products")
+    .populate("users");
 
   res.status(200).json(wishlist);
 });
@@ -29,7 +31,9 @@ router.post("/", async (req, res) => {
   });
 
   // Save new wishlist in database
-  const savedWishlist = await wishlist.save();
+  const savedWishlist = (await wishlist.save())
+    .populate("products")
+    .populate("users");
 
   res.status(201).json(savedWishlist);
 });
@@ -58,7 +62,9 @@ router.patch("/:wishlistID", async (req, res) => {
   }
 
   // Update wishlist in database
-  const updatedWishlist = await (await wishlist.save()).populate("products");
+  const updatedWishlist = (await wishlist.save())
+    .populate("products")
+    .populate("users");
 
   res.status(200).json(updatedWishlist);
 });
@@ -68,7 +74,9 @@ router.delete("/:wishlistID", async (req, res) => {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
-  const wishlist = await Wishlist.findByIdAndDelete(wishlistID);
+  const wishlist = await Wishlist.findByIdAndDelete(wishlistID)
+    .populate("products")
+    .populate("users");
 
   res.status(200).json(wishlist);
 });
@@ -86,7 +94,9 @@ router.delete("/:wishlistID/products/:productID", async (req, res) => {
   );
 
   // Update wishlist in database
-  const updatedWishlist = await wishlist.save();
+  const updatedWishlist = (await wishlist.save())
+    .populate("products")
+    .populate("users");
 
   res.status(200).json(updatedWishlist);
 });

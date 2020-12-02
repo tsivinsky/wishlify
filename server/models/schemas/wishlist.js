@@ -13,8 +13,9 @@ const schema = new mongoose.Schema(
       default: null,
     },
     owner: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       required: true,
+      ref: "User",
     },
     products: [
       {
