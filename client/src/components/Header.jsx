@@ -1,17 +1,35 @@
 // Import dependencies
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { collect } from "react-recollect";
+import { useHistory } from "react-router-dom";
 
-export default function Header() {
+function Header({ store }) {
+  const history = useHistory();
+
+  function logout() {
+    store.auth = {
+      state: false,
+      user: null,
+    };
+
+    localStorage.removeItem("user");
+
+    history.push("/");
+  }
+
   return (
     <header>
       <NavLink to="/">
         <h1>Wishlify</h1>
       </NavLink>
-      <nav>
-        <NavLink to="/register">Sign Up</NavLink>
-        <NavLink to="/login">Sign In</NavLink>
-      </nav>
+      {store.auth.state && (
+        <nav>
+          <button onClick={logout}>Log Out</button>
+        </nav>
+      )}
     </header>
   );
 }
+
+export default collect(Header);

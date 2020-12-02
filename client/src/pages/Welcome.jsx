@@ -2,27 +2,36 @@
 import React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { collect } from "react-recollect";
 import axios from "../axios";
-import useAuth from "../hooks/useAuth";
+import { showError, clearMessage } from "../helpers/messages";
 
-export default function Welcome() {
+function Welcome({ store }) {
   const history = useHistory();
-  const [, setAuth] = useAuth();
-
   const [showLoginForm, setShowLoginForm] = useState(true);
-  const [message, setMessage] = useState({ text: "", type: "" });
 
+  // Function for handling login form
   async function login(e) {
     e.preventDefault();
 
     const email = document.querySelector("#email-input").value;
     const password = document.querySelector("#password-input").value;
 
-    const response = await axios.post("/login", { email, password });
+    try {
+      const response = await axios.post("/login", { email, password });
 
-    answerResponse(response);
+      saveUser(response.data);
+
+      clearMessage();
+      history.push("/home");
+    } catch (err) {
+      if (err.response) {
+        showError(err.response.data);
+      }
+    }
   }
 
+  // Function for handling register form
   async function register(e) {
     e.preventDefault();
 
@@ -30,43 +39,33 @@ export default function Welcome() {
     const email = document.querySelector("#email-input").value;
     const password = document.querySelector("#password-input").value;
 
-    const response = await axios.post("/register", { name, email, password });
+    try {
+      const response = await axios.post("/register", { name, email, password });
 
-    answerResponse(response);
+      saveUser(response.data);
+
+      clearMessage();
+      history.push("/home");
+    } catch (err) {
+      if (err.response) {
+        showError(err.response.data);
+      }
+    }
   }
 
-  function answerResponse(response) {
-    if (!response.data.data) {
-      const { message } = response.data;
+  // Function for saving user's data
+  function saveUser(data) {
+    // Save user id in localStorage
+    localStorage.setItem("user", data._id);
 
-      setMessage({ text: message, type: "error" });
-    } else {
-      const { message, data: user } = response.data;
-
-      setMessage({ text: message, type: "success" });
-
-      setAuth({ state: true, user });
-
-      localStorage.setItem("user", JSON.stringify(user));
-
-      window.location.reload();
-    }
+    store.auth = {
+      state: true,
+      user: data,
+    };
   }
 
   return (
     <div className="welcome-page">
-      {message.text !== "" ? (
-        <div>
-          <span
-            style={{
-              color: message.type == "error" ? "#b00020" : "green",
-            }}
-          >
-            {message.text}
-          </span>
-        </div>
-      ) : null}
-
       {showLoginForm ? (
         <>
           <form id="login-form">
@@ -106,3 +105,5 @@ export default function Welcome() {
     </div>
   );
 }
+
+export default collect(Welcome);
