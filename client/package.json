@@ -2,20 +2,14 @@
   "name": "wishlify",
   "version": "1.0.0",
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "node-sass": "^4.14.1",
     "query-string": "^6.13.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-recollect": "^5.2.3",
-    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
-    "redux": "^4.0.5",
-    "remote-redux-devtools": "^0.5.16"
+    "react-scripts": "3.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
