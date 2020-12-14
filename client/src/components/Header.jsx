@@ -28,7 +28,7 @@ function Header({ store }) {
           <button onClick={logout}>Log Out</button>
         </nav>
       ) : (
-        <h3>Buy all of them</h3>
+        <h3>Buy them all</h3>
       )}
     </header>
   );
