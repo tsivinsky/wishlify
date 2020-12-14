@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { collect } from "react-recollect";
 import axios from "../axios";
 import getWishlistsByUser from "../helpers/getWishlistsByUser";
+import { showError } from "../helpers/messages";
 
 // Import components
 import Wishlist from "../components/Wishlist";
@@ -31,7 +32,7 @@ function Home({ store }) {
       store.wishlists.push(response.data);
     } catch (err) {
       if (err.response) {
-        // TODO: setMessage(err.response.data);
+        showError(err.response.data);
       }
     }
   }
@@ -48,7 +49,7 @@ function Home({ store }) {
       );
     } catch (err) {
       if (err.response) {
-        // TODO: setMessage(err.response.data)
+        showError(err.response.data);
       }
     }
   }

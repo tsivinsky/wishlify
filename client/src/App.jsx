@@ -15,7 +15,9 @@ import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import Wishlist from "./pages/Wishlist";
 
+// Import components
 import Header from "./components/Header";
+import Notification from "./components/Notification";
 
 function App({ store }) {
   const { auth } = store;
@@ -43,6 +45,7 @@ function App({ store }) {
     <Router>
       {auth && (
         <>
+          <Notification />
           <Header />
           <Switch>
             <Route path="/" exact>
