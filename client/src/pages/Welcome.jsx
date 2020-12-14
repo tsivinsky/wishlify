@@ -6,6 +6,12 @@ import { collect } from "react-recollect";
 import axios from "../axios";
 import { showError, clearMessage } from "../helpers/messages";
 
+// Import components
+import Form from "../components/form/Form";
+import FormGroup from "../components/form/FormGroup";
+import Label from "../components/form/Label";
+import Input from "../components/form/Input";
+
 function Welcome({ store }) {
   const history = useHistory();
   const [showLoginForm, setShowLoginForm] = useState(true);
@@ -67,40 +73,57 @@ function Welcome({ store }) {
   return (
     <div className="welcome-page">
       {showLoginForm ? (
-        <>
-          <form id="login-form">
-            <input type="email" id="email-input" placeholder="Your email" />
-            <input
-              type="password"
-              id="password-input"
-              placeholder="Your password"
-            />
-            <button type="submit" onClick={login}>
+        <div className="inner-block">
+          <Form id="login-form">
+            <FormGroup>
+              <Label element="email-input" text="Your email" />
+              <Input type="email" id="email-input" />
+            </FormGroup>
+            <FormGroup>
+              <Label element="password-input" text="Your password" />
+              <Input type="password" id="password-input" />
+            </FormGroup>
+            <button type="submit" className="btn btn-primary" onClick={login}>
               Log In
             </button>
-          </form>
-          <button onClick={() => setShowLoginForm(false)}>
+          </Form>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowLoginForm(false)}
+          >
             Doesn`t have an account?
           </button>
-        </>
+        </div>
       ) : (
-        <>
-          <form id="register-form">
-            <input type="text" id="name-input" placeholder="Your name" />
-            <input type="email" id="email-input" placeholder="Your email" />
-            <input
-              type="password"
-              id="password-input"
-              placeholder="Create password"
-            />
-            <button type="submit" onClick={register}>
+        <div className="inner-block">
+          <Form id="register-form">
+            <FormGroup>
+              <Label element="name-input" text="Your name" />
+              <Input type="text" id="name-input" />
+            </FormGroup>
+            <FormGroup>
+              <Label element="email-input" text="Your email" />
+              <Input type="email" id="email-input" />
+            </FormGroup>
+            <div className="form-group">
+              <Label element="password-input" text="Create a password" />
+              <Input type="password" id="password-input" />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={register}
+            >
               Sign Up
             </button>
-          </form>
-          <button onClick={() => setShowLoginForm(true)}>
+          </Form>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowLoginForm(true)}
+          >
             Already have an account?
           </button>
-        </>
+        </div>
       )}
     </div>
   );

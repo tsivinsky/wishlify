@@ -1,2 +1,50 @@
 .welcome-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .inner-block {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    form {
+      width: 30%;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      .form-group {
+        position: relative;
+        left: 0;
+        top: 0;
+        label {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          transition: all 0.3s ease;
+          transition-property: left, top, background-color, padding;
+          &.focused {
+            left: 30px;
+            top: 0;
+            background-color: #ffffff;
+            padding: 0 5px;
+          }
+        }
+        input {
+          width: 100%;
+          border: 1px solid;
+          padding: 10px;
+          background: none;
+          font-size: 12pt;
+          transition: border-color 0.3s ease;
+          &:focus {
+            border-color: $primary;
+          }
+        }
+      }
+    }
+  }
 }

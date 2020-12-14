@@ -1,0 +1,37 @@
+a {
+  text-decoration: none;
+  color: $secondary;
+  &:visited {
+    color: $secondary;
+  }
+}
+
+.btn {
+  padding: 10px;
+  font-size: larger;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  &.btn-primary {
+    border: 1px solid $primary;
+    background-color: $secondary;
+    transition-property: background-color color, box-shadow;
+    &:hover {
+      background-color: $primary;
+      color: #ffffff;
+    }
+  }
+  &.btn-secondary {
+    border: 1px solid $secondary;
+    background-color: #ffffff;
+    transition-property: border-color, box-shadow;
+    &:hover {
+      border-color: $primary;
+    }
+  }
+  &:hover {
+    box-shadow: 0 5px 10px 5px $secondary;
+  }
+  &:focus {
+    box-shadow: 0 0 5px 2px $secondary;
+  }
+}

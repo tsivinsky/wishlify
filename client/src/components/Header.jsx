@@ -23,10 +23,12 @@ function Header({ store }) {
       <NavLink to="/">
         <h1>Wishlify</h1>
       </NavLink>
-      {store.auth.state && (
+      {store.auth.state ? (
         <nav>
           <button onClick={logout}>Log Out</button>
         </nav>
+      ) : (
+        <h3>Buy all of them</h3>
       )}
     </header>
   );
