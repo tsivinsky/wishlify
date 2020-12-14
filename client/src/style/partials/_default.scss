@@ -35,3 +35,21 @@ a {
     box-shadow: 0 0 5px 2px $secondary;
   }
 }
+
+button.btn-link {
+  border: none;
+  background: none;
+  font-size: 12pt;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-bottom 0.3s ease;
+  &:hover {
+    border-bottom: 1px solid $secondary;
+  }
+  &.btn-primary {
+    color: $primary;
+  }
+  &.btn-secondary {
+    color: $secondary;
+  }
+}

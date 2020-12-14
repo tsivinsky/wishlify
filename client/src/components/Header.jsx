@@ -25,7 +25,12 @@ function Header({ store }) {
       </NavLink>
       {store.auth.state ? (
         <nav>
-          <button onClick={logout}>Log Out</button>
+          <button
+            className="btn-link btn-logout btn-secondary"
+            onClick={logout}
+          >
+            Log Out
+          </button>
         </nav>
       ) : (
         <h3>Buy them all</h3>
