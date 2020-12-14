@@ -8,6 +8,7 @@ import axios from "../axios";
 import { showError } from "../helpers/messages";
 
 import NotFound from "./NotFound";
+import Product from "../components/Product";
 
 function Wishlist({ store }) {
   const history = useHistory();
@@ -47,6 +48,21 @@ function Wishlist({ store }) {
       <div className="wishlist-page">
         <h1>{wishlist.name}</h1>
         <p>{wishlist.description}</p>
+        {wishlist.products &&
+          wishlist.products.map((product, i) => (
+            <Product
+              key={i}
+              id={product._id}
+              title={product.title}
+              price={product.price.amount}
+              priceCurrency={product.price.currency}
+              shipping={product.shipping.amount}
+              shippingCurrency={product.shipping.currency}
+              image={product.image}
+              url={product.url}
+              shop={product.shop}
+            />
+          ))}
       </div>
     );
   }
