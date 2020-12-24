@@ -24,11 +24,15 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("Invalid email");
   }
 
+  console.log("Before checking if email already exists");
+
   // Check if user with this email already registered
   const emailTaken = await User.findOne({ email });
   if (emailTaken) {
     return res.status(400).send("Email already registered");
   }
+
+  console.log("Before creating new user");
 
   // Create a new user
   const user = new User({
@@ -37,8 +41,12 @@ router.post("/register", async (req, res) => {
     password,
   });
 
+  console.log("User created", user);
+
   // Hash user's password
   user.hashPassword();
+
+  console.log("Before hashing the password");
 
   const savedUser = await user.save();
 
