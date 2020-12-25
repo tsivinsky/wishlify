@@ -46,7 +46,7 @@ router.post("/register", async (req, res) => {
   // Hash user's password
   user.hashPassword();
 
-  console.log("Before hashing the password");
+  console.log("After hashing the password");
 
   const savedUser = await user.save();
 
