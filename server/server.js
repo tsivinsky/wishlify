@@ -2,6 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv/config");
+require("./db");
 
 // Initialise application
 const app = express();
@@ -20,9 +21,6 @@ app.use("/", require("./routes/auth"));
 app.use("/users", require("./routes/users"));
 app.use("/wishlists", require("./routes/wishlists"));
 app.use("/products", require("./routes/products"));
-
-// Connect to database
-require("./db");
 
 // Listen to the port
 const PORT = process.env.PORT || 5000;
