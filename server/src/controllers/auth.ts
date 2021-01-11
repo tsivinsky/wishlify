@@ -1,14 +1,13 @@
-// Require dependencies
-const router = require("express").Router();
-const User = require("../models/User");
-const validator = require("validator");
+import { Request, Response } from "express";
+import validator from "validator";
+import { User } from "../models";
 
-// POST route for register new users
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+// Register controller
+export async function register(req: Request, res: Response) {
+  const { name, email, username, password } = req.body;
 
   // Check for empty values
-  if (!name || !email || !password) {
+  if (!name || !email || !username || !password) {
     return res.status(400).send("Empty value");
   }
 
@@ -24,37 +23,36 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("Invalid email");
   }
 
-  console.log("Before checking if email already exists");
-
   // Check if user with this email already registered
   const emailTaken = await User.findOne({ email });
   if (emailTaken) {
     return res.status(400).send("Email already registered");
   }
 
-  console.log("Before creating new user");
+  // Check if this username already taken
+  const usernameTaken = await User.findOne({ username });
+  if (usernameTaken) {
+    return res.status(400).send("This username already taken");
+  }
 
   // Create a new user
-  const user = new User({
+  const user = await User.create({
     name,
     email,
+    username,
     password,
   });
-
-  console.log("User created", user);
 
   // Hash user's password
   user.hashPassword();
 
-  console.log("After hashing the password");
-
   const savedUser = await user.save();
 
-  res.status(201).json(savedUser);
-});
+  return res.status(201).json(savedUser);
+}
 
-// POST route for authenticate existing users
-router.post("/login", async (req, res) => {
+// Login controller
+export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
 
   // Check for empty values
@@ -79,8 +77,5 @@ router.post("/login", async (req, res) => {
     return res.status(400).send("Invalid password");
   }
 
-  res.status(200).json(user);
-});
-
-// Export router
-module.exports = router;
+  return res.status(200).json(user);
+}

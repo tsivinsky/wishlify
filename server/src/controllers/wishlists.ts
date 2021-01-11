@@ -1,9 +1,8 @@
-// Require dependencies
-const router = require("express").Router();
-const Wishlist = require("../models/Wishlist");
+import { Request, Response } from "express";
+import { Wishlist } from "../models";
 
-// GET route for getting wishlist by id
-router.get("/:wishlistID", async (req, res) => {
+// Get wishlist controller
+export async function getWishlist(req: Request, res: Response) {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
@@ -12,10 +11,10 @@ router.get("/:wishlistID", async (req, res) => {
     .populate("users");
 
   res.status(200).json(wishlist);
-});
+}
 
-// POST route for creating new wishlists
-router.post("/", async (req, res) => {
+// Create wishlist controller
+export async function createWishlist(req: Request, res: Response) {
   const { name, description, owner } = req.body;
 
   // Check for empty values
@@ -24,10 +23,11 @@ router.post("/", async (req, res) => {
   }
 
   // Create a new wishlist
-  const wishlist = new Wishlist({
+  const wishlist = await Wishlist.create({
     name,
     description,
     owner,
+    products: [],
   });
 
   // Save new wishlist in database
@@ -35,11 +35,11 @@ router.post("/", async (req, res) => {
     .populate("products")
     .populate("users");
 
-  res.status(201).json(savedWishlist);
-});
+  return res.status(201).json(savedWishlist);
+}
 
-// PATCH route for updating wishlist
-router.patch("/:wishlistID", async (req, res) => {
+// Update wishlist controller
+export async function updateWishlist(req: Request, res: Response) {
   const { wishlistID } = req.params;
   const { name, description } = req.body;
 
@@ -66,11 +66,11 @@ router.patch("/:wishlistID", async (req, res) => {
     .populate("products")
     .populate("users");
 
-  res.status(200).json(updatedWishlist);
-});
+  return res.status(200).json(updatedWishlist);
+}
 
-// DELETE route for deleting wishlist
-router.delete("/:wishlistID", async (req, res) => {
+// Delete wishlist controller
+export async function deleteWishlist(req: Request, res: Response) {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
@@ -78,28 +78,30 @@ router.delete("/:wishlistID", async (req, res) => {
     .populate("products")
     .populate("users");
 
-  res.status(200).json(wishlist);
-});
+  return res.status(200).json(wishlist);
+}
 
-// DELETE route for removing products from wishlist
-router.delete("/:wishlistID/products/:productID", async (req, res) => {
+// Remove product in wishlist controller
+export async function removeProductFromWishlist(req: Request, res: Response) {
   const { wishlistID, productID } = req.params;
 
   // Find wishlist by id
   const wishlist = await Wishlist.findById(wishlistID);
 
   // Remove product from wishlist
-  wishlist.products = wishlist.products.filter(
-    (id) => String(id) !== productID
-  );
+  // wishlist.products = wishlist.products.filter(
+  //   (id: string) => String(id) !== productID
+  // );
+  for (const [id, i] of Object.entries(wishlist.products)) {
+    if (String(id) === productID) {
+      wishlist.products.slice(Number(i), 1);
+    }
+  }
 
   // Update wishlist in database
   const updatedWishlist = (await wishlist.save())
     .populate("products")
     .populate("users");
 
-  res.status(200).json(updatedWishlist);
-});
-
-// Export router
-module.exports = router;
+  return res.status(200).json(updatedWishlist);
+}

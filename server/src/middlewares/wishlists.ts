@@ -1,9 +1,12 @@
-// Require dependencies
-const router = require("express").Router();
-const Wishlist = require("../models/Wishlist");
+import { Request, Response, NextFunction } from "express";
+import { Wishlist } from "../models";
 
 // Middleware for checking if wishlist does not exist
-router.use("/:wishlistID", async (req, res, next) => {
+export async function wishlistsMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
@@ -13,8 +16,5 @@ router.use("/:wishlistID", async (req, res, next) => {
     return res.status(404).send("Wishlist not found");
   }
 
-  next();
-});
-
-// Export router
-module.exports = router;
+  return next();
+}

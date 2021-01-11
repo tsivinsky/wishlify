@@ -1,9 +1,12 @@
-// Require dependencies
-const router = require("express").Router();
-const Product = require("../models/Product");
+import { Request, Response, NextFunction } from "express";
+import { Product } from "../models";
 
 // Middleware for checking if product does not exist
-router.use("/:productID", async (req, res, next) => {
+export async function productsMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { productID } = req.params;
 
   // Find product by id
@@ -13,8 +16,5 @@ router.use("/:productID", async (req, res, next) => {
     return res.status(404).send("Product not found");
   }
 
-  next();
-});
-
-// Export router
-module.exports = router;
+  return next();
+}

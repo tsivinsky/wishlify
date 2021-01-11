@@ -1,11 +1,11 @@
-// Require dependencies
-const router = require("express").Router();
-const Product = require("../models/Product");
-const Wishlist = require("../models/Wishlist");
-const getProductData = require("../util/getProductData");
+import express, { IRouter, Request, Response } from "express";
+import { Product, Wishlist } from "../models";
+import getProductData from "../util/getProductData";
+
+const router: IRouter = express.Router();
 
 // POST route for adding new products to wishlist
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request, res: Response) => {
   const { url, wishlistID } = req.body;
 
   // Check for empty value
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     const productData = await getProductData(url);
 
     // Create new product
-    product = new Product(productData);
+    product = await Product.create(productData);
   }
 
   // Save new product in database
@@ -35,8 +35,7 @@ router.post("/", async (req, res) => {
   // Update wishlist
   await wishlist.save();
 
-  res.status(201).json(savedProduct);
+  return res.status(201).json(savedProduct);
 });
 
-// Export router
-module.exports = router;
+export default router;

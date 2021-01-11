@@ -2,27 +2,34 @@
   "name": "wishlify",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "jest",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
+  "main": "src/index.ts",
   "keywords": [],
   "author": "Daniil Tsivinsky <daniil@tsivinsky.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon dist/index.js",
+    "watch": "tsc --watch",
+    "build": "tsc"
+  },
   "dependencies": {
     "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.10.7",
+    "mongoose": "^5.11.11",
     "puppeteer": "^5.3.1",
     "validator": "^13.1.17"
   },
   "devDependencies": {
-    "jest": "^26.6.3",
-    "nodemon": "^2.0.4"
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.9",
+    "@types/express": "^4.17.9",
+    "@types/node": "^14.14.20",
+    "@types/puppeteer": "^5.4.2",
+    "@types/validator": "^13.1.2",
+    "nodemon": "^2.0.6",
+    "typescript": "^4.1.3"
   }
 }

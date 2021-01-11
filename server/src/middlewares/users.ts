@@ -1,9 +1,12 @@
-// Require dependencies
-const router = require("express").Router();
-const User = require("../models/User");
+import { Request, Response, NextFunction } from "express";
+import { User } from "../models";
 
 // Middleware for checking if user does not exist
-router.use("/:userID", async (req, res, next) => {
+export async function usersMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { userID } = req.params;
 
   // Find user by id
@@ -13,8 +16,5 @@ router.use("/:userID", async (req, res, next) => {
     return res.status(404).send("User not found");
   }
 
-  next();
-});
-
-// Export router
-module.exports = router;
+  return next();
+}
