@@ -6,9 +6,7 @@ export async function getWishlist(req: Request, res: Response) {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID)
-    .populate("products")
-    .populate("users");
+  const wishlist = await Wishlist.findById(wishlistID);
 
   res.status(200).json(wishlist);
 }
@@ -31,9 +29,7 @@ export async function createWishlist(req: Request, res: Response) {
   });
 
   // Save new wishlist in database
-  const savedWishlist = (await wishlist.save())
-    .populate("products")
-    .populate("users");
+  const savedWishlist = await wishlist.save();
 
   return res.status(201).json(savedWishlist);
 }
@@ -62,9 +58,7 @@ export async function updateWishlist(req: Request, res: Response) {
   }
 
   // Update wishlist in database
-  const updatedWishlist = (await wishlist.save())
-    .populate("products")
-    .populate("users");
+  const updatedWishlist = await wishlist.save();
 
   return res.status(200).json(updatedWishlist);
 }
@@ -74,9 +68,7 @@ export async function deleteWishlist(req: Request, res: Response) {
   const { wishlistID } = req.params;
 
   // Find wishlist by id
-  const wishlist = await Wishlist.findByIdAndDelete(wishlistID)
-    .populate("products")
-    .populate("users");
+  const wishlist = await Wishlist.findByIdAndDelete(wishlistID);
 
   return res.status(200).json(wishlist);
 }
@@ -99,9 +91,7 @@ export async function removeProductFromWishlist(req: Request, res: Response) {
   }
 
   // Update wishlist in database
-  const updatedWishlist = (await wishlist.save())
-    .populate("products")
-    .populate("users");
+  const updatedWishlist = await wishlist.save();
 
   return res.status(200).json(updatedWishlist);
 }
