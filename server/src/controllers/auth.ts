@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import validator from "validator";
 import { User } from "../models";
+import { createToken, checkPassword } from "../helpers";
 
 // Register controller
 export async function register(req: Request, res: Response) {
@@ -43,12 +44,12 @@ export async function register(req: Request, res: Response) {
     password,
   });
 
-  // Hash user's password
-  user.hashPassword();
+  // Create JSON Web Token
+  const token = await createToken(user.toJSON());
 
   const savedUser = await user.save();
 
-  return res.status(201).json(savedUser);
+  return res.status(201).json({ user: savedUser, token });
 }
 
 // Login controller
@@ -72,10 +73,12 @@ export async function login(req: Request, res: Response) {
   }
 
   // Check if password is invalid
-  const isMatch = user.checkPassword(password);
+  const isMatch = checkPassword(password, user.password);
   if (!isMatch) {
     return res.status(400).send("Invalid password");
   }
 
-  return res.status(200).json(user);
+  const token = await createToken(user.toJSON());
+
+  return res.status(200).json({ user, token });
 }

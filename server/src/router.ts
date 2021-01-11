@@ -4,12 +4,14 @@ const router = express.Router();
 
 // Routers
 import authRouter from "./routes/auth";
-import userRouter from "./routes/users";
+import usersRouter from "./routes/users";
 import wishlistsRouter from "./routes/wishlists";
+import userRouter from "./routes/user";
 
 // Routes
-router.use(authRouter);
-router.use(userRouter);
-router.use(wishlistsRouter);
+router.use(authRouter); // /auth
+router.use(usersRouter); // /users
+router.use(wishlistsRouter); // /wishlists
+router.use(userRouter); // /user
 
 export default router;
