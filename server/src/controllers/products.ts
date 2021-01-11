@@ -1,6 +1,6 @@
 import express, { IRouter, Request, Response } from "express";
 import { Product, Wishlist } from "../models";
-import getProductData from "../util/getProductData";
+import { getProductData } from "../helpers";
 
 const router: IRouter = express.Router();
 

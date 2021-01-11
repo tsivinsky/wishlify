@@ -10,7 +10,7 @@ interface Selector {
   image: string[];
 }
 
-export default async function getProductData(url: string) {
+export async function getProductData(url: string) {
   const browser: Browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox"],
