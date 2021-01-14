@@ -1,21 +1,16 @@
+// Dependencies
 import express from "express";
+import { verifyUser } from "../middlewares";
+import { usersController as controller } from "../controllers";
 
 const router = express.Router();
 
-// Middleware function for verifying user
-import { verifyUser } from "../middlewares/verifyUser";
-
-// Controller
-import { userController as controller } from "../controllers";
+// Middlewares
+router.use("/", verifyUser);
 
 // Routes
-router.get("/user", verifyUser, controller.getUser);
-router.get("/user/wishlists", verifyUser, controller.getUserWishlists);
-router.post("/user/wishlists", verifyUser, controller.createWishlist);
-router.get(
-  "/user/wishlists/:displayName",
-  verifyUser,
-  controller.getWishlistByDisplayName
-);
+router.get("/", controller.getUser);
+router.patch("/", controller.updateUser);
+router.delete("/", controller.deleteUser);
 
 export default router;

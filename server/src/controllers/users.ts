@@ -1,28 +1,29 @@
 import { Request, Response } from "express";
-import { User, Wishlist } from "../models";
+import { User } from "../models";
+import { createToken } from "../helpers";
 
 // Get user controller
 export async function getUser(req: Request, res: Response) {
-  const { userID } = req.params;
+  const { username } = req.user;
 
-  // Find user by id
-  const user = await User.findById(userID);
+  // Find user by username
+  const user = await User.findOne({ username });
 
   return res.status(200).json(user);
 }
 
 // Update user controller
 export async function updateUser(req: Request, res: Response) {
-  const { userID } = req.params;
-  const { name, email } = req.body;
+  const { username } = req.user;
+  const { name, email, password, username: newUsername } = req.body;
 
-  // Check for empty values
-  if (!name || !email) {
+  // Check for empty value
+  if (Object.keys(req.body).length === 0) {
     return res.status(400).send("Empty value");
   }
 
-  // Find user by id
-  const user = await User.findById(userID);
+  // Find user by username
+  const user = await User.findOne({ username });
 
   // Update name
   if (name) {
@@ -40,20 +41,36 @@ export async function updateUser(req: Request, res: Response) {
     user.email = email;
   }
 
+  // Update password
+  if (password) {
+    user.password = password;
+  }
+
+  // Update username
+  if (newUsername) {
+    // Check if this username already taken
+    const usernameTaken = await User.findOne({ username: newUsername });
+    if (usernameTaken) {
+      return res.status(400).send("This username already taken");
+    }
+
+    user.username = newUsername;
+  }
+
+  // Create new JSON Web Token
+  const token = await createToken(user.toJSON());
+
   // Update user in database
   const updatedUser = await user.save();
 
-  return res.status(200).json(updatedUser);
+  return res.status(200).json({ user: updatedUser, token });
 }
 
-// Get user wishlists controller
-export async function getUserWishlists(req: Request, res: Response) {
-  const { userID } = req.params;
+// Delete user controller
+export async function deleteUser(req: Request, res: Response) {
+  const { username } = req.user;
 
-  // Find all wishlists by owner property
-  const wishlists = await Wishlist.find({
-    owner: userID,
-  }).populate("products");
+  await User.deleteOne({ username });
 
-  return res.status(200).json(wishlists);
+  res.status(200).send("User was deleted");
 }

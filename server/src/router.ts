@@ -1,17 +1,14 @@
+// Dependencies
 import express from "express";
+import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
+import wishlistsRouter from "./routes/wishlists";
 
 const router = express.Router();
 
-// Routers
-import authRouter from "./routes/auth";
-import usersRouter from "./routes/users";
-import wishlistsRouter from "./routes/wishlists";
-import userRouter from "./routes/user";
-
 // Routes
-router.use(authRouter); // /auth
-router.use(usersRouter); // /users
-router.use(wishlistsRouter); // /wishlists
-router.use(userRouter); // /user
+router.use("/auth", authRouter);
+router.use("/user", userRouter);
+router.use("/wishlists", wishlistsRouter);
 
 export default router;

@@ -24,32 +24,36 @@ export async function getProductData(url: string) {
     .map((shop) => (hostname.includes(shop.name) ? shop.selectors : null))
     .filter((x) => x)[0];
 
-  const title = await getElement("title", selectors);
-  const price = await getElement("price", selectors);
-  const image = await getElement("image", selectors);
-  const shipping = await getElement("shipping", selectors);
+  const titleElement = await getElement("title", selectors);
+  const priceElement = await getElement("price", selectors);
+  const shippingElement = await getElement("shipping", selectors);
+  const imageElement = await getElement("image", selectors);
 
-  if (!title || !price || !image) {
+  if (!titleElement || !priceElement || !shippingElement || !imageElement) {
     throw new Error("Unable to scrape data");
   }
 
   // Pull the data from elements
-  const titleText = await title.evaluate((title) => title.innerHTML.trim());
-  const priceText = await price.evaluate((price) => price.innerHTML.trim());
-  const shippingText = await shipping.evaluate((shipping) =>
+  const title = await titleElement.evaluate((title) => title.innerHTML.trim());
+  const priceText = await priceElement.evaluate((price) =>
+    price.innerHTML.trim()
+  );
+  const shippingText = await shippingElement.evaluate((shipping) =>
     shipping.innerHTML.trim()
   );
-  const imageSrc = await image.evaluate((img) => img.getAttribute("src"));
+  const image = await imageElement.evaluate((img) => img.getAttribute("src"));
 
   // Separate price and shipping text into number and currency
-  const priceData = separateCurrencyAndPrice(priceText);
-  const shippingData = separateCurrencyAndPrice(shippingText);
+  const currency = getCurrency(priceText);
+  const price = getAmount(priceText);
+  const shipping = getAmount(shippingText);
 
   const data = {
-    title: titleText,
-    price: priceData,
-    shipping: shippingData,
-    image: imageSrc,
+    title,
+    price,
+    shipping,
+    currency,
+    image,
     shop: hostname,
     url,
   };
@@ -79,113 +83,20 @@ export async function getProductData(url: string) {
   }
 }
 
-function separateCurrencyAndPrice(text: string) {
-  const amount = text.match(/[0-9]|\.|\,/g).join("");
-
+function getCurrency(text: string): string {
   if (/\$/.test(text)) {
-    return {
-      amount,
-      currency: "$",
-    };
+    return "$";
   }
 
   if (/\€/.test(text)) {
-    return {
-      amount,
-      currency: "€",
-    };
+    return "€";
   }
 
-  return {
-    amount,
-    currency: "₽",
-  };
+  return "₽";
 }
 
-// // Function for scraping url to get product's data
-// module.exports = async function getProductData(url = "") {
-//   const browser = await puppeteer.launch({
-//     headless: true,
-//     args: ["no-sandbox"],
-//   });
-//   const page = await browser.newPage();
-//   await page.goto(url, { waitUntil: "networkidle0" });
+function getAmount(text: string): string {
+  const amount = text.match(/[0-9]|\.|\,/g).join("");
 
-//   const shop = new URL(url).hostname;
-
-//   const selectors = allSelectors
-//     .map((_shop) => (shop.includes(_shop.name) ? _shop.selectors : null))
-//     .filter((x) => x)[0];
-
-//   const title = await getElement(selectors.title);
-//   const price = await getElement(selectors.price);
-//   const image = await getElement(selectors.image);
-//   const shipping = await getElement(selectors.shipping);
-
-//   if (!title || !price || !image) {
-//     throw new Error("Unable to scrape data");
-//   }
-
-//   // Pull the data from elements
-//   const titleText = await title.evaluate((title) => title.innerText.trim());
-//   const priceText = await price.evaluate((price) => price.innerText.trim());
-//   const shippingText = await shipping.evaluate((shipping) =>
-//     shipping.innerText.trim()
-//   );
-//   const imageSrc = await image.evaluate((img) => img.getAttribute("src"));
-
-//   // Separate price and shipping text into number and currency
-//   const priceData = separateCurrencyAndPrice(priceText);
-//   const shippingData = separateCurrencyAndPrice(shippingText);
-
-//   const data = {
-//     title: titleText,
-//     price: priceData,
-//     shipping: shippingData,
-//     image: imageSrc,
-//     shop,
-//     url,
-//   };
-
-//   // Close browser
-//   await browser.close();
-
-//   return data;
-
-//   async function getElement(selectors = []) {
-//     return new Promise(async (resolve) => {
-//       let element;
-
-//       for (let selector of selectors) {
-//         element = await page.$(selector);
-
-//         if (element) break;
-//       }
-
-//       resolve(element);
-//     });
-//   }
-// };
-
-// function separateCurrencyAndPrice(text = "") {
-//   const amount = text.match(/[0-9]|\.|\,/g).join("");
-
-//   if (/\$/.test(text)) {
-//     return {
-//       amount,
-//       currency: "$",
-//     };
-//   }
-
-//   if (/\€/.test(text)) {
-//     return {
-//       amount,
-//       currency: "€",
-//     };
-//   }
-
-//   return {
-//     amount,
-//     currency: "₽",
-//   };
-// }
+  return amount;
+}

@@ -1,14 +1,12 @@
 import jwt from "jsonwebtoken";
 
 export function createToken(payload: TUser): Promise<string> {
-  console.log(payload);
-
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
       {
-        expiresIn: 60 * 60 * 24 * 30,
+        expiresIn: "30d",
       },
       (err, token) => {
         if (err) {

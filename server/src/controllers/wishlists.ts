@@ -1,22 +1,24 @@
 import { Request, Response } from "express";
-import { Wishlist } from "../models";
+import { Wishlist, Product } from "../models";
+import { getProductData } from "../helpers";
 
-// Get wishlist controller
-export async function getWishlist(req: Request, res: Response) {
-  const { wishlistID } = req.params;
+// Get user's wishlists controller
+export async function getUserWishlists(req: Request, res: Response) {
+  const { _id: owner } = req.user;
 
-  // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID);
+  // Find all user's wishlists
+  const wishlists = await Wishlist.find({ owner });
 
-  res.status(200).json(wishlist);
+  res.status(200).json(wishlists);
 }
 
 // Create wishlist controller
 export async function createWishlist(req: Request, res: Response) {
-  const { name, description, owner } = req.body;
+  const { _id: owner } = req.user;
+  const { name, description } = req.body;
 
   // Check for empty values
-  if (!name || !owner) {
+  if (!name) {
     return res.status(400).send("Empty value");
   }
 
@@ -34,18 +36,30 @@ export async function createWishlist(req: Request, res: Response) {
   return res.status(201).json(savedWishlist);
 }
 
+// Get wishlist controller
+export async function getWishlist(req: Request, res: Response) {
+  const { _id: owner } = req.user;
+  const { displayName } = req.params;
+
+  // Find wishlist by displayName prop
+  const wishlist = await Wishlist.findOne({ displayName, owner });
+
+  res.status(200).json(wishlist);
+}
+
 // Update wishlist controller
 export async function updateWishlist(req: Request, res: Response) {
-  const { wishlistID } = req.params;
+  const { _id: owner } = req.user;
+  const { displayName } = req.params;
   const { name, description } = req.body;
 
   // Check for empty body
-  if (!name && !description) {
+  if (Object.keys(req.body).length === 0) {
     return res.status(400).send("Empty value");
   }
 
-  // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID);
+  // Find wishlist by displayName prop
+  const wishlist = await Wishlist.findOne({ displayName, owner });
 
   // Update name
   if (name) {
@@ -65,30 +79,70 @@ export async function updateWishlist(req: Request, res: Response) {
 
 // Delete wishlist controller
 export async function deleteWishlist(req: Request, res: Response) {
-  const { wishlistID } = req.params;
+  const { _id: owner } = req.user;
+  const { displayName } = req.params;
 
-  // Find wishlist by id
-  const wishlist = await Wishlist.findByIdAndDelete(wishlistID);
+  // Find wishlist by displayName prop
+  const wishlist = await Wishlist.findOneAndDelete({ displayName, owner });
 
   return res.status(200).json(wishlist);
 }
 
-// Remove product in wishlist controller
-export async function removeProductFromWishlist(req: Request, res: Response) {
-  const { wishlistID, productID } = req.params;
+export async function addProduct(req: Request, res: Response) {
+  const { _id: owner } = req.user;
+  const { displayName } = req.params;
+  const { url } = req.body;
 
-  // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID);
+  // Check for empty values
+  if (!url) {
+    return res.status(400).send("Empty value");
+  }
+
+  // Find wishlist by displayName prop
+  const wishlist = await Wishlist.findOne({ displayName, owner });
+
+  // Check if this product already exists in this wishlist
+  const productIndex = wishlist.products.findIndex((p) => p.url === url);
+  if (productIndex !== -1) {
+    return res
+      .status(400)
+      .send("You already have this product in this wishlist");
+  }
+
+  // Check if product with the same url already exists in database
+  let product = await Product.findOne({ url });
+  if (!product) {
+    const productData = await getProductData(url);
+
+    product = await Product.create(productData);
+  }
+
+  const savedProduct = await product.save();
+
+  wishlist.products.push(savedProduct._id);
+
+  const updatedWishlist = await wishlist.save();
+
+  return res.status(201).json(updatedWishlist);
+}
+
+// Remove product in wishlist controller
+export async function removeProduct(req: Request, res: Response) {
+  const { _id: owner } = req.user;
+  const { displayName, productID } = req.params;
+
+  // Find wishlist by displayName prop
+  const wishlist = await Wishlist.findOne({ displayName, owner });
+
+  // Find product index in wishlist
+  const productIndex = wishlist.products.findIndex((p) => p._id == productID);
+
+  if (productIndex === -1) {
+    return res.status(400).send("Product not found");
+  }
 
   // Remove product from wishlist
-  // wishlist.products = wishlist.products.filter(
-  //   (id: string) => String(id) !== productID
-  // );
-  for (const [id, i] of Object.entries(wishlist.products)) {
-    if (String(id) === productID) {
-      wishlist.products.slice(Number(i), 1);
-    }
-  }
+  wishlist.products.splice(Number(productIndex), 1);
 
   // Update wishlist in database
   const updatedWishlist = await wishlist.save();

@@ -7,13 +7,16 @@ export async function wishlistsMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const { wishlistID } = req.params;
+  const { _id: owner } = req.user;
+  const { displayName } = req.params;
 
-  // Find wishlist by id
-  const wishlist = await Wishlist.findById(wishlistID);
+  if (displayName) {
+    // Find wishlist by displayName prop
+    const wishlist = await Wishlist.findOne({ displayName, owner });
 
-  if (!wishlist) {
-    return res.status(404).send("Wishlist not found");
+    if (!wishlist) {
+      return res.status(404).send("Wishlist not found");
+    }
   }
 
   return next();
