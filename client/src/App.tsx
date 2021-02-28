@@ -32,6 +32,8 @@ export default function App() {
           setMessage({ text: err });
           stopLoading();
         });
+    } else {
+      stopLoading();
     }
   }, []);
 
