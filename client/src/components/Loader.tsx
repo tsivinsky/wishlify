@@ -1,7 +1,7 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { useLoading } from "../store";
 
-export const Loader: React.FC = (props: any) => {
+export const Loader: React.FC = (props: PropsWithChildren<{}>) => {
   const { loading } = useLoading();
 
   if (loading) {
@@ -12,5 +12,5 @@ export const Loader: React.FC = (props: any) => {
     );
   }
 
-  return props.children;
+  return <>{props.children}</>;
 };
