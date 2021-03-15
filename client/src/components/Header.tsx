@@ -1,13 +1,20 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useAuth } from "../store";
 
 export const Header: React.FC = () => {
-  const { auth } = useAuth();
+  const { auth, removeAuth } = useAuth();
+  const history = useHistory();
 
   const isUserAuthenticated = Boolean(
     auth.user !== null && auth.token !== null
   );
+
+  function logout() {
+    removeAuth();
+
+    history.push("/");
+  }
 
   return (
     <header>
@@ -18,8 +25,14 @@ export const Header: React.FC = () => {
       {isUserAuthenticated ? (
         <nav>
           <NavLink to="/account">Account</NavLink>
+          <button onClick={logout}>Log out</button>
         </nav>
-      ) : null}
+      ) : (
+        <nav>
+          <NavLink to="/join">Sign Up</NavLink>
+          <NavLink to="/login">Sign In</NavLink>
+        </nav>
+      )}
     </header>
   );
 };
