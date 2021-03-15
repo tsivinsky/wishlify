@@ -10,6 +10,10 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+
+  interface PageProps {
+    // history: History<unknown>;
+  }
 }
 
 export {};
