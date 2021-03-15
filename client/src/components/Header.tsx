@@ -1,36 +1,33 @@
-import React from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import Link from "next/link";
+import { isUserAuthorized } from "../helpers";
 import { useAuth } from "../store";
 
 export const Header: React.FC = () => {
-  const { auth, removeAuth } = useAuth();
-  const history = useHistory();
-
-  const isUserAuthenticated = Boolean(
-    auth.user !== null && auth.token !== null
-  );
-
-  function logout() {
-    removeAuth();
-
-    history.push("/");
-  }
+  const { auth } = useAuth();
 
   return (
     <header>
-      <NavLink to="/">
-        <h1>Wishlify</h1>
-      </NavLink>
+      <Link href="/">
+        <a>
+          <h1>Wishlify</h1>
+        </a>
+      </Link>
 
-      {isUserAuthenticated ? (
+      {isUserAuthorized(auth) ? (
         <nav>
-          <NavLink to="/account">Account</NavLink>
-          <button onClick={logout}>Log out</button>
+          <Link href="/account">
+            <a>Account</a>
+          </Link>
+          <button>Log out</button>
         </nav>
       ) : (
         <nav>
-          <NavLink to="/join">Sign Up</NavLink>
-          <NavLink to="/login">Sign In</NavLink>
+          <Link href="/join">
+            <a>Sign Up</a>
+          </Link>
+          <Link href="/login">
+            <a>Sign In</a>
+          </Link>
         </nav>
       )}
     </header>

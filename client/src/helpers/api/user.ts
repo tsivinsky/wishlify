@@ -1,4 +1,4 @@
-import { createAxiosInstance } from "../../axios";
+import { createAxiosInstance } from "../axiosInstance";
 
 export async function getAuthorizedUser(token: string): Promise<IUser> {
   const axios = createAxiosInstance({}, token);

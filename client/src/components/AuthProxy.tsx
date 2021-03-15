@@ -1,23 +1,18 @@
-import React, { PropsWithChildren, useEffect } from "react";
-import { useAuth, useLoading, useMessage } from "../store";
+import { PropsWithChildren, useEffect } from "react";
 import { api } from "../helpers";
+import { useAuth, useMessage, useTokenStore } from "../store";
 
-export const AuthProxy = (props: PropsWithChildren<{}>) => {
+export const AuthProxy: React.FC = (props: PropsWithChildren<{}>) => {
+  const { token } = useTokenStore();
   const { setAuth } = useAuth();
-  const { stopLoading } = useLoading();
   const { setMessage } = useMessage();
-
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (token) {
       api.user
         .getAuthorizedUser(token)
         .then((user) => setAuth(token, user))
-        .catch((err) => setMessage({ text: err?.response?.data }))
-        .then(() => stopLoading());
-    } else {
-      stopLoading();
+        .catch((err) => setMessage({ text: err as string }));
     }
   }, []);
 
