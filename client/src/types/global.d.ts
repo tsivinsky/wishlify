@@ -1,3 +1,5 @@
+import { NextRouter } from "next/router";
+
 declare global {
   interface IUser {
     _id: string;
@@ -7,6 +9,10 @@ declare global {
     password: string;
     createdAt: Date;
     updatedAt: Date;
+  }
+
+  interface PageProps {
+    router: NextRouter;
   }
 }
 

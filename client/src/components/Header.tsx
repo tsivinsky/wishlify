@@ -1,13 +1,22 @@
 import Link from "next/link";
+import { NextRouter } from "next/router";
 import { isUserAuthorized } from "../helpers";
 import { useAuth } from "../store";
 
-export const Header: React.FC = () => {
-  const { auth } = useAuth();
+export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
+  const { auth, removeAuth } = useAuth();
+
+  function logout() {
+    if (!confirm("Are you sure?")) return;
+
+    removeAuth();
+
+    router.push("/");
+  }
 
   return (
     <header>
-      <Link href="/">
+      <Link href={auth.user !== null ? "/home" : "/"}>
         <a>
           <h1>Wishlify</h1>
         </a>
@@ -18,7 +27,9 @@ export const Header: React.FC = () => {
           <Link href="/account">
             <a>Account</a>
           </Link>
-          <button>Log out</button>
+          <button className="btn btn-logout" onClick={logout}>
+            Log out
+          </button>
         </nav>
       ) : (
         <nav>

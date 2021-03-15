@@ -1,14 +1,16 @@
-import { useRouter } from "next/router";
-import { useAuth } from "../store";
-import { isUserAuthorized, isServer } from "../helpers";
+import { useEffect } from "react";
+import { useAuth, useLoading } from "../store";
+import { isUserAuthorized } from "../helpers";
 
-export default function Home() {
-  const { push } = useRouter();
+export default function Home({ router }: PageProps) {
   const { auth } = useAuth();
+  const { loading } = useLoading();
 
-  if (!isUserAuthorized(auth) && !isServer) {
-    push("/");
-  }
+  useEffect(() => {
+    if (!isUserAuthorized(auth) && !loading) {
+      router.push("/");
+    }
+  }, [auth]);
 
   if (auth.user) {
     return (
