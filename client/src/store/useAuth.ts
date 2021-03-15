@@ -17,8 +17,16 @@ export const useAuth = create(
       auth: initialState,
     },
     (set) => ({
-      setAuth: (token: string, user: IUser) => set({ auth: { token, user } }),
-      removeAuth: () => set({ auth: initialState }),
+      setAuth: (token: string, user: IUser) => {
+        set({ auth: { token, user } });
+
+        localStorage.setItem("token", token);
+      },
+      removeAuth: () => {
+        set({ auth: initialState });
+
+        localStorage.removeItem("token");
+      },
     })
   )
 );
