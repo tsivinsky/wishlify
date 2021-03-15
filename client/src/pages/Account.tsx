@@ -1,16 +1,14 @@
 import React from "react";
 import { useAuth } from "../store";
 
-export const Account: React.FC = () => {
+export const Account: React.FC<PageProps> = () => {
   const { auth } = useAuth();
 
-  if (auth.user) {
-    return (
-      <div className="account-page">
-        <h1>Hello, {auth.user.name}!</h1>
-      </div>
-    );
-  }
+  console.log(auth);
 
-  return null;
+  return (
+    <div className="account-page">
+      <h1>Hello, {auth.user?.name}!</h1>
+    </div>
+  );
 };
