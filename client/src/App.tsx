@@ -1,58 +1,43 @@
-import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
-import { api } from "./helpers";
-import { Welcome, Home, Account } from "./pages";
-import { useAuth, useMessage, useLoading } from "./store";
-import { Loader, Header } from "./components";
+import { Welcome, Home, Account, Login } from "./pages";
+import { Loader, Header, Notification, AuthProxy } from "./components";
+import { useAuth, useLoading } from "./store";
 
 export default function App() {
-  const { auth, setAuth } = useAuth();
-  const { setMessage } = useMessage();
-  const { stopLoading } = useLoading();
+  const { auth } = useAuth();
+  const { loading } = useLoading();
 
-  const token = localStorage.getItem("token");
-  const isUserAuthenticated = Boolean(
-    auth.token !== null && auth.user !== null
-  );
-
-  useEffect(() => {
-    if (token) {
-      api.user
-        .getAuthorizedUser(token)
-        .then((data) => {
-          setAuth(token, data);
-          stopLoading();
-        })
-        .catch((err) => {
-          setMessage({ text: err });
-          stopLoading();
-        });
-    } else {
-      stopLoading();
-    }
-  }, []);
+  const isUserAuthorized = Boolean(auth.user !== null && auth.token !== null);
+  console.log(loading);
 
   return (
-    <Loader>
-      <Router>
-        <Header />
-        <Switch>
-          <Route path="/" exact>
-            {isUserAuthenticated ? <Redirect to="/home" /> : <Welcome />}
-          </Route>
-          <Route path="/home">
-            {isUserAuthenticated ? <Home /> : <Redirect to="/" />}
-          </Route>
-          <Route path="/account">
-            {isUserAuthenticated ? <Account /> : <Redirect to="/" />}
-          </Route>
-        </Switch>
-      </Router>
-    </Loader>
+    <Router>
+      <AuthProxy>
+        <Loader>
+          <Notification>
+            <Header />
+            <Switch>
+              <Route path="/" exact>
+                {isUserAuthorized ? <Redirect to="/home" /> : <Welcome />}
+              </Route>
+              <Route path="/home">
+                {isUserAuthorized ? <Home /> : <Redirect to="/" />}
+              </Route>
+              <Route path="/account">
+                {isUserAuthorized ? <Account /> : <Redirect to="/" />}
+              </Route>
+              <Route path="/login">
+                {isUserAuthorized ? <Redirect to="/home" /> : <Login />}
+              </Route>
+            </Switch>
+          </Notification>
+        </Loader>
+      </AuthProxy>
+    </Router>
   );
 }
