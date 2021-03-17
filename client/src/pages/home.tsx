@@ -44,9 +44,7 @@ export default function Home({ router }: PageProps) {
   }
 
   async function deleteWishlist(_id: string) {
-    api.wishlists.deleteWishlist(auth.token as string, _id).then((wishlist) => {
-      setWishlists(wishlists.filter((w) => w._id !== wishlist._id));
-    });
+    // TODO: Add api call to delete wishlist
   }
 
   if (auth.user) {
