@@ -1,14 +1,9 @@
 import { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import { AuthProxy, Header, Notification } from "../components";
 
 import "../scss/style.scss";
 
-export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
-  console.log(router.route);
-
+export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <AuthProxy>
       <Header router={router} />
