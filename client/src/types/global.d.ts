@@ -30,6 +30,7 @@ declare global {
     currency: string;
     shop: string;
     url: string;
+    image: string;
     createdAt: Date;
     updatedAt: Date;
   }

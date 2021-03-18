@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 interface Props {
   _id: string;
@@ -9,6 +10,7 @@ interface Props {
   createdAt: Date;
   updatedAt: Date;
   onDelete: (_id: string) => void;
+  username: string;
 }
 
 export const Wishlist: React.FC<Props> = (props) => {
@@ -17,6 +19,9 @@ export const Wishlist: React.FC<Props> = (props) => {
       <h2>{props.name}</h2>
       <p>{props.description}</p>
       <div className="controls">
+        <Link href={`/${props.username}/${props.displayName}`}>
+          <a>View</a>
+        </Link>
         <button
           className="btn delete-wishlist"
           onClick={() => props.onDelete(props.displayName)}
