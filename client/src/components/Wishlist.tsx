@@ -19,7 +19,7 @@ export const Wishlist: React.FC<Props> = (props) => {
       <div className="controls">
         <button
           className="btn delete-wishlist"
-          onClick={() => props.onDelete(props._id)}
+          onClick={() => props.onDelete(props.displayName)}
         >
           Delete
         </button>

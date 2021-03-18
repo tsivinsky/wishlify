@@ -1,11 +1,8 @@
 import { createAxiosInstance } from "../axiosInstance";
 
-// TODO: Add props to Response interface
-interface Response {}
-
 export async function getAuthorizedUserWishlists(
   token: string
-): Promise<Response> {
+): Promise<Array<IWishlist>> {
   const axios = createAxiosInstance({}, token);
 
   return new Promise(async (resolve, reject) => {
@@ -32,7 +29,7 @@ export interface CreateNewWishlistProps {
 export async function createNewWishlist(
   token: string,
   data: CreateNewWishlistProps
-): Promise<Response> {
+): Promise<IWishlist> {
   const axios = createAxiosInstance({}, token);
 
   return new Promise(async (resolve, reject) => {
@@ -52,13 +49,13 @@ export async function createNewWishlist(
 
 export async function deleteWishlist(
   token: string,
-  _id: string
-): Promise<Response> {
+  displayName: string
+): Promise<IWishlist> {
   const axios = createAxiosInstance({}, token);
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.delete(`/wishlists/${_id}`);
+      const response = await axios.delete(`/wishlists/${displayName}`);
 
       resolve(response.data);
     } catch (err) {

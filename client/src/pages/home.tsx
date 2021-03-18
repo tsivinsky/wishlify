@@ -43,8 +43,13 @@ export default function Home({ router }: PageProps) {
       .catch((err) => setMessage({ text: err }));
   }
 
-  async function deleteWishlist(_id: string) {
-    // TODO: Add api call to delete wishlist
+  async function deleteWishlist(displayName: string) {
+    api.wishlists
+      .deleteWishlist(auth.token as string, displayName)
+      .then((wishlist) =>
+        setWishlists(wishlists.filter((w) => w._id !== wishlist._id))
+      )
+      .catch((err) => setMessage({ text: err }));
   }
 
   if (auth.user) {
@@ -53,12 +58,13 @@ export default function Home({ router }: PageProps) {
         <h1>Home page</h1>
 
         <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
+          <h3>Create new wishlist</h3>
           <div className="name">
-            <label htmlFor="name">Wishlist name</label>
+            <label htmlFor="name">Name</label>
             <input type="text" name="name" id="name" required ref={register} />
           </div>
           <div className="description">
-            <label htmlFor="description">Wishlist description</label>
+            <label htmlFor="description">Description</label>
             <input
               type="text"
               name="description"
@@ -66,7 +72,7 @@ export default function Home({ router }: PageProps) {
               ref={register}
             />
           </div>
-          <button type="submit">Create new Wishlist</button>
+          <button type="submit">Create</button>
         </form>
 
         <div className="wishlists">
