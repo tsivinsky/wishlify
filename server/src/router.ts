@@ -1,8 +1,6 @@
 // Dependencies
 import express from "express";
-import authRouter from "./routes/auth";
-import userRouter from "./routes/user";
-import wishlistsRouter from "./routes/wishlists";
+import { authRouter, userRouter, wishlistsRouter } from "./routes";
 
 const router = express.Router();
 

@@ -7,7 +7,7 @@ import {
   verifyUser,
 } from "../middlewares";
 
-const router = express.Router();
+export const router = express.Router();
 
 // Middlewares
 router.use(verifyUser);
@@ -21,5 +21,3 @@ router.patch("/:displayName", controller.updateWishlist);
 router.delete("/:displayName", controller.deleteWishlist);
 router.post("/:displayName/products", controller.addProduct);
 router.delete("/:displayName/products/:productID", controller.removeProduct);
-
-export default router;
