@@ -1,16 +1,7 @@
-import { useEffect } from "react";
-import { useAuth, useLoading } from "../store";
-import { isUserAuthorized } from "../helpers";
+import { useAuth } from "../store";
 
 export default function Home({ router }: PageProps) {
   const { auth } = useAuth();
-  const { loading } = useLoading();
-
-  useEffect(() => {
-    if (!isUserAuthorized(auth) && !loading) {
-      router.push("/");
-    }
-  }, []);
 
   if (auth.user) {
     return (

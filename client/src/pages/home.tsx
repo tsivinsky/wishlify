@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth, useLoading, useMessage, useWishlists } from "../store";
-import { isUserAuthorized, api } from "../helpers";
+import { useAuth, useMessage, useWishlists } from "../store";
+import { api } from "../helpers";
 import { Wishlist } from "../components";
 
 interface Inputs {
@@ -11,17 +11,10 @@ interface Inputs {
 
 export default function Home({ router }: PageProps) {
   const { auth } = useAuth();
-  const { loading } = useLoading();
   const { wishlists, setWishlists } = useWishlists();
   const { setMessage } = useMessage();
 
   const { register, handleSubmit, reset } = useForm<Inputs>();
-
-  useEffect(() => {
-    if (!isUserAuthorized(auth) && !loading) {
-      router.push("/");
-    }
-  }, [auth]);
 
   useEffect(() => {
     if (auth.token) {
