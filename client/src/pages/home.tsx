@@ -9,7 +9,7 @@ interface Inputs {
   description: string;
 }
 
-export default function Home({ router }: PageProps) {
+export default function Home({}: PageProps) {
   const { auth } = useAuth();
   const { wishlists, setWishlists } = useWishlists();
   const { setMessage } = useMessage();

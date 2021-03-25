@@ -1,6 +1,6 @@
 import { useAuth } from "../store";
 
-export default function Home({ router }: PageProps) {
+export default function Home({}: PageProps) {
   const { auth } = useAuth();
 
   if (auth.user) {
