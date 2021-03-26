@@ -22,7 +22,7 @@ export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
         </a>
       </Link>
 
-      {isUserAuthorized(auth) ? (
+      {isUserAuthorized(auth) && (
         <nav>
           <Link href="/account">
             <a>Account</a>
@@ -30,15 +30,6 @@ export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
           <button className="btn btn-logout" onClick={logout}>
             Log out
           </button>
-        </nav>
-      ) : (
-        <nav>
-          <Link href="/join">
-            <a>Sign Up</a>
-          </Link>
-          <Link href="/login">
-            <a>Sign In</a>
-          </Link>
         </nav>
       )}
     </header>
