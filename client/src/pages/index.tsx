@@ -6,7 +6,7 @@ export default function Index({ router }: PageProps) {
   const { auth } = useAuth();
   const { loading, stopLoading } = useLoading();
 
-  // Redirect to /home if user is not authorized
+  // Redirect to /home if user is authorized
   useEffect(() => {
     if (isUserAuthorized(auth)) {
       router.push("/home");
