@@ -45,7 +45,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
-      <Header router={router} />
+      {router.pathname !== "/" && <Header router={router} />}
       <Notification />
       <Component router={router} {...pageProps} />
     </>
