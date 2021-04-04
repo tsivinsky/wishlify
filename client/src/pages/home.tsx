@@ -14,15 +14,14 @@ export default function Home({}: PageProps) {
   const { wishlists, setWishlists } = useWishlists();
   const { setMessage } = useMessage();
 
-  const { register, handleSubmit, reset } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
     if (auth.token) {
       api.wishlists
         .getAuthorizedUserWishlists(auth.token)
         .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
-        .catch((err) => setMessage({ text: err }))
-        .then(() => reset());
+        .catch((err) => setMessage({ text: err }));
     }
   }, [auth.token]);
 
