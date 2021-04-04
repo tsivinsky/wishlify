@@ -1,15 +1,11 @@
 import { useAuth } from "../store";
 
-export default function Home({}: PageProps) {
+export default function Account({}: PageProps) {
   const { auth } = useAuth();
 
-  if (auth.user) {
-    return (
-      <div className="home-page">
-        <h1>Hello, {auth.user.name}!</h1>
-      </div>
-    );
-  }
-
-  return null;
+  return (
+    <div className="home-page">
+      <h1>Hello, {auth.user!.name}!</h1>
+    </div>
+  );
 }

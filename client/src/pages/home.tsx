@@ -17,13 +17,11 @@ export default function Home({}: PageProps) {
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
-    if (auth.token) {
-      api.wishlists
-        .getAuthorizedUserWishlists(auth.token)
-        .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
-        .catch((err) => setMessage({ text: err }));
-    }
-  }, [auth.token]);
+    api.wishlists
+      .getAuthorizedUserWishlists(auth.token as string)
+      .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
+      .catch((err) => setMessage({ text: err }));
+  }, []);
 
   async function createWishlist(data: Inputs) {
     api.wishlists
@@ -44,46 +42,42 @@ export default function Home({}: PageProps) {
       .catch((err) => setMessage({ text: err }));
   }
 
-  if (auth.user) {
-    return (
-      <div className="home-page">
-        <h1>Home page</h1>
+  return (
+    <div className="home-page">
+      <h1>Home page</h1>
 
-        <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
-          <h3>Create new wishlist</h3>
-          <div className="name">
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" id="name" required ref={register} />
-          </div>
-          <div className="description">
-            <label htmlFor="description">Description</label>
-            <input
-              type="text"
-              name="description"
-              id="description"
-              ref={register}
-            />
-          </div>
-          <button type="submit">Create</button>
-        </form>
-
-        <div className="wishlists">
-          {wishlists.length > 0 ? (
-            wishlists.map((wishlist, i) => (
-              <Wishlist
-                key={i}
-                {...wishlist}
-                username={auth.user!.username}
-                onDelete={deleteWishlist}
-              />
-            ))
-          ) : (
-            <span>You have no wishlists.</span>
-          )}
+      <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
+        <h3>Create new wishlist</h3>
+        <div className="name">
+          <label htmlFor="name">Name</label>
+          <input type="text" name="name" id="name" required ref={register} />
         </div>
-      </div>
-    );
-  }
+        <div className="description">
+          <label htmlFor="description">Description</label>
+          <input
+            type="text"
+            name="description"
+            id="description"
+            ref={register}
+          />
+        </div>
+        <button type="submit">Create</button>
+      </form>
 
-  return null;
+      <div className="wishlists">
+        {wishlists.length > 0 ? (
+          wishlists.map((wishlist, i) => (
+            <Wishlist
+              key={i}
+              {...wishlist}
+              username={auth.user!.username}
+              onDelete={deleteWishlist}
+            />
+          ))
+        ) : (
+          <span>You have no wishlists.</span>
+        )}
+      </div>
+    </div>
+  );
 }
