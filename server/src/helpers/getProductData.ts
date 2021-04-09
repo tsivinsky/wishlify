@@ -1,4 +1,3 @@
-// Dependencies
 import puppeteer, { Browser, Page, ElementHandle } from "puppeteer";
 import { URL } from "url";
 import allSelectors from "../selectors.json";
@@ -58,7 +57,6 @@ export async function getProductData(url: string) {
     url,
   };
 
-  // Close browser
   await browser.close();
 
   return data;

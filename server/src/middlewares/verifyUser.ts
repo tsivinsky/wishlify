@@ -16,14 +16,13 @@ export async function verifyUser(
     return res.sendStatus(401);
   }
 
-  // Verify token
+  // Verify jsonwebtoken
   const [, token] = req.headers.authorization.split(" ");
   const payload = await verifyToken(token);
   if (!payload) {
     return res.sendStatus(401);
   }
 
-  // Find user by id
   const user = await User.findById(payload._id);
   if (!user) {
     return res.sendStatus(401);

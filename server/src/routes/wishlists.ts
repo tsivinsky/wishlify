@@ -1,4 +1,3 @@
-// Dependencies
 import express from "express";
 import { wishlistsController as controller } from "../controllers";
 import {
@@ -9,11 +8,9 @@ import {
 
 export const router = express.Router();
 
-// Middlewares
 router.use(verifyUser);
 router.use("/:displayName", sanitizeWishlistDisplayName, wishlistsMiddleware);
 
-// Routes
 router.get("/", controller.getUserWishlists);
 router.post("/", controller.createWishlist);
 router.get("/:displayName", controller.getWishlist);

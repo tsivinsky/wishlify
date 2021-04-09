@@ -1,11 +1,6 @@
-export function sanitizeName(name: string): string {
-  let displayName: string;
-
-  // Make name to be in lower case
-  displayName = name.toLowerCase();
-
+export function sanitizeWishlistName(name: string): string {
   // Replace all symbols except of "-" and "_" with dash "-"
-  displayName = displayName.replace(/[^\w\s]| /gi, "-");
+  const displayName = name.toLowerCase().replace(/[^\w\s]| /gi, "-");
 
   return displayName;
 }

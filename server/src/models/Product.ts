@@ -1,5 +1,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export interface IProduct extends Document {
+  title: string;
+  price: string;
+  shipping: string;
+  currency: string;
+  url: string;
+  shop: string;
+  image: string;
+}
+
 const schema = new Schema({
   title: {
     type: String,
@@ -30,15 +40,5 @@ const schema = new Schema({
     required: true,
   },
 });
-
-export interface IProduct extends Document {
-  title: string;
-  price: string;
-  shipping: string;
-  currency: string;
-  url: string;
-  shop: string;
-  image: string;
-}
 
 export const Product = mongoose.model<IProduct>("Product", schema);

@@ -1,15 +1,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-/**
- * Make sure that this interface has the same exact props as global TUser in types/global.d.ts
- */
-export interface IUser extends Document {
+export interface IUser {
   name: string;
   email: string;
   username: string;
   password: string;
   confirmed: boolean;
+}
+
+interface UserDoc extends IUser, Document {
   hashPassword: () => void;
   checkPassword: (password: string) => boolean;
 }
@@ -42,7 +42,7 @@ const schema = new Schema(
 );
 
 // Method for hashing password after every change
-schema.pre<IUser>("save", function (): void {
+schema.pre<UserDoc>("save", function (): void {
   if (this.isModified("password")) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(this.password, salt);
@@ -52,4 +52,4 @@ schema.pre<IUser>("save", function (): void {
 });
 
 // User model
-export const User = mongoose.model<IUser>("User", schema, "users");
+export const User = mongoose.model<UserDoc>("User", schema, "users");
