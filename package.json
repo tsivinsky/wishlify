@@ -1,0 +1,11 @@
+{
+  "name": "wishlify",
+  "version": "1.0.0",
+  "repository": "git@github.com:tsivinsky/wishlify.git",
+  "author": "Daniil Tsivinsky <daniil@tsivinsky.com>",
+  "license": "MIT",
+  "scripts": {
+    "install": "cd server && yarn && cd ../client && yarn",
+    "clean": "rm -rf **/node_modules **/dist **/.next"
+  }
+}
