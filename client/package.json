@@ -1,6 +1,5 @@
 {
-  "name": "wishlify-client",
-  "version": "1.0.0",
+  "name": "wishlify",
   "author": "Daniil Tsivinsky <daniil@tsivinsky.com> (https://tsivinsky.com)",
   "license": "MIT",
   "scripts": {
