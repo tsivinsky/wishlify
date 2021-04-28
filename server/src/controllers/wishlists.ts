@@ -7,7 +7,9 @@ export async function getUserWishlists(req: Request, res: Response) {
 
   const wishlists = await Wishlist.find({ owner });
 
-  res.status(200).json(wishlists);
+  res
+    .status(200)
+    .json({ message: "Wishlists were found", data: { wishlists } });
 }
 
 export async function createWishlist(req: Request, res: Response) {
@@ -15,7 +17,7 @@ export async function createWishlist(req: Request, res: Response) {
   const { name, description } = req.body;
 
   if (!name) {
-    return res.status(400).send("Empty value");
+    return res.status(400).json({ message: "Name is not provided" });
   }
 
   const wishlist = await Wishlist.create({
@@ -27,7 +29,10 @@ export async function createWishlist(req: Request, res: Response) {
 
   const savedWishlist = await wishlist.save();
 
-  return res.status(201).json(savedWishlist);
+  return res.status(201).json({
+    message: "Wishlist was created",
+    data: { wishlist: savedWishlist },
+  });
 }
 
 export async function getWishlist(req: Request, res: Response) {
@@ -35,18 +40,19 @@ export async function getWishlist(req: Request, res: Response) {
   const { displayName } = req.params;
 
   const wishlist = await Wishlist.findOne({ displayName, owner });
+  if (!wishlist) {
+    return res.status(404).json({ message: "Wishlist was not found" });
+  }
 
-  res.status(200).json(wishlist);
+  return res
+    .status(200)
+    .json({ message: "Wishlist was found", data: { wishlist } });
 }
 
 export async function updateWishlist(req: Request, res: Response) {
   const { _id: owner } = req.user;
   const { displayName } = req.params;
   const { name, description } = req.body;
-
-  if (Object.keys(req.body).length === 0) {
-    return res.status(400).send("Empty value");
-  }
 
   const wishlist = await Wishlist.findOne({ displayName, owner });
 
@@ -60,7 +66,10 @@ export async function updateWishlist(req: Request, res: Response) {
 
   const updatedWishlist = await wishlist.save();
 
-  return res.status(200).json(updatedWishlist);
+  return res.status(200).json({
+    message: "Wishlist was updated",
+    data: { wishlist: updatedWishlist },
+  });
 }
 
 export async function deleteWishlist(req: Request, res: Response) {
@@ -69,7 +78,9 @@ export async function deleteWishlist(req: Request, res: Response) {
 
   const wishlist = await Wishlist.findOneAndDelete({ displayName, owner });
 
-  return res.status(200).json(wishlist);
+  return res
+    .status(200)
+    .json({ message: "Wishlist was deleted", data: { wishlist } });
 }
 
 export async function addProduct(req: Request, res: Response) {
@@ -78,7 +89,7 @@ export async function addProduct(req: Request, res: Response) {
   const { url } = req.body;
 
   if (!url) {
-    return res.status(400).send("Empty value");
+    return res.status(400).json({ message: "Url is not provided" });
   }
 
   const wishlist = await Wishlist.findOne({ displayName, owner });
@@ -88,7 +99,7 @@ export async function addProduct(req: Request, res: Response) {
   if (productIndex !== -1) {
     return res
       .status(400)
-      .send("You already have this product in this wishlist");
+      .json({ message: "You already have this product in this wishlist" });
   }
 
   // Check if product with the same url already exists in database
@@ -105,7 +116,10 @@ export async function addProduct(req: Request, res: Response) {
 
   const updatedWishlist = await wishlist.save();
 
-  return res.status(201).json(updatedWishlist);
+  return res.status(201).json({
+    message: "Product added to wishlist",
+    data: { wishlist: updatedWishlist },
+  });
 }
 
 export async function removeProduct(req: Request, res: Response) {
@@ -118,12 +132,15 @@ export async function removeProduct(req: Request, res: Response) {
   const productIndex = wishlist.products.findIndex((p) => p._id == productID);
 
   if (productIndex === -1) {
-    return res.status(400).send("Product not found");
+    return res.status(400).json({ message: "Product not found" });
   }
 
   wishlist.products.splice(productIndex, 1);
 
   const updatedWishlist = await wishlist.save();
 
-  return res.status(200).json(updatedWishlist);
+  return res.status(200).json({
+    message: "Product was deleted",
+    data: { wishlist: updatedWishlist },
+  });
 }

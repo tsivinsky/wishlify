@@ -1,71 +1,69 @@
 import { Request, Response } from "express";
 import validator from "validator";
 import { User } from "../models";
-import { createToken, checkPassword } from "../helpers";
+import { jwt, mail } from "../helpers";
+import { generateConfirmationCode } from "../helpers";
 
-export async function register(req: Request, res: Response) {
-  const { name, email, username, password } = req.body;
+export async function signin(req: Request, res: Response) {
+  const { email } = req.body as { email: string };
 
-  if (!name || !email || !username || !password) {
-    return res.status(400).send("Empty value");
-  }
-
-  if (password.length < 8) {
-    return res
-      .status(400)
-      .send("Password length shoudn`t be less than 8 symbols");
+  if (!email) {
+    return res.status(400).json({ message: "Email is not provided" });
   }
 
   if (!validator.isEmail(email)) {
-    return res.status(400).send("Invalid email");
+    return res.status(400).json({ message: "Invalid email format" });
   }
 
-  const emailTaken = await User.findOne({ email });
-  if (emailTaken) {
-    return res.status(400).send("Email already registered");
+  let user = await User.findOne({ email });
+  if (!user) {
+    // TODO: Write username generation in a better way
+    const [username] = email.split("@");
+
+    const newUser = await User.create({
+      email,
+      username,
+    });
+
+    user = await newUser.save();
   }
 
-  const usernameTaken = await User.findOne({ username });
-  if (usernameTaken) {
-    return res.status(400).send("This username already taken");
-  }
+  const confirmationCode = generateConfirmationCode();
+  await mail.sendConfirmationEmail(user.email, confirmationCode);
 
-  const user = await User.create({
-    name,
-    email,
-    username,
-    password,
-  });
+  const token = await jwt.createToken({ _id: user._id });
 
-  const token = await createToken(user.toJSON());
+  req.session.confirmationCode = confirmationCode;
+  req.session.userID = user._id;
+  req.session.token = token;
 
-  const savedUser = await user.save();
-
-  return res.status(201).json({ user: savedUser, token });
+  return res.status(200).json({ message: "You successfully authenticated" });
 }
 
-export async function login(req: Request, res: Response) {
-  const { email, password } = req.body;
+export async function verifyCode(req: Request, res: Response) {
+  const { code } = req.body as { code: number };
 
-  if (!email || !password) {
-    return res.status(400).send("Empty value");
+  if (!code) {
+    return res.status(400).json({ message: "Code is not provided" });
   }
 
-  if (!validator.isEmail(email)) {
-    return res.status(400).send("Invalid email");
+  if (!req.session.token) {
+    return res
+      .status(400)
+      .json({ message: "You first need to sign in using email" });
   }
 
-  const user = await User.findOne({ email });
+  if (req.session?.confirmationCode !== code) {
+    return res.status(400).json({ message: "Invalid code" });
+  }
+
+  const user = await User.findById(req.session.userID);
   if (!user) {
-    return res.status(400).send("Email does not exist");
+    return res.status(404).json({ message: "User was not found" });
   }
 
-  const isMatch = checkPassword(password, user.password);
-  if (!isMatch) {
-    return res.status(400).send("Invalid password");
-  }
-
-  const token = await createToken(user.toJSON());
-
-  return res.status(200).json({ user, token });
+  return res.status(200).json({
+    message: "You successfully signed in",
+    data: { user, token: req.session.token },
+  });
 }

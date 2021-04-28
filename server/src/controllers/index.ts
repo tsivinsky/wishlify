@@ -1,4 +1,3 @@
 export * as authController from "./auth";
-export * as usersController from "./users";
+export * as userController from "./user";
 export * as wishlistsController from "./wishlists";
-export * as errorController from "./error";

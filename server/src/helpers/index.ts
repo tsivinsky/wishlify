@@ -1,4 +1,4 @@
 export * from "./getProductData";
-export * from "./jwt";
-export * from "./password";
-export * from "./sanitizeWishlistName";
+export * as jwt from "./jwt";
+export * as mail from "./mail";
+export * from "./code";

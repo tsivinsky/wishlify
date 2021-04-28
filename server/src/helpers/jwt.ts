@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 
-export function createToken(payload: TUser): Promise<string> {
+interface Payload {
+  _id: string;
+}
+
+export function createToken(payload: Payload): Promise<string> {
   return new Promise((resolve, reject) => {
     jwt.sign(
       payload,
@@ -9,24 +13,20 @@ export function createToken(payload: TUser): Promise<string> {
         expiresIn: "30d",
       },
       (err, token) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(token);
-        }
+        if (err) reject(err);
+
+        resolve(token);
       }
     );
   });
 }
 
-export function verifyToken(token: string): Promise<any> {
-  return new Promise((resolve) => {
+export function verifyToken(token: string): Promise<Payload> {
+  return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-      if (err) {
-        resolve(null);
-      }
+      if (err) reject(err);
 
-      resolve(payload);
+      resolve(payload as Payload);
     });
   });
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../helpers";
+import { jwt } from "../helpers";
 import { User } from "../models";
 
 export async function verifyUser(
@@ -16,9 +16,9 @@ export async function verifyUser(
     return res.sendStatus(401);
   }
 
-  // Verify jsonwebtoken
+  // Verify token
   const [, token] = req.headers.authorization.split(" ");
-  const payload = await verifyToken(token);
+  const payload = await jwt.verifyToken(token);
   if (!payload) {
     return res.sendStatus(401);
   }

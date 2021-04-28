@@ -1,26 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
-import bcrypt from "bcryptjs";
 
-export interface IUser {
-  name: string;
+export interface IUser extends Document {
   email: string;
   username: string;
-  password: string;
-  confirmed: boolean;
 }
 
-interface UserDoc extends IUser, Document {
-  hashPassword: () => void;
-  checkPassword: (password: string) => boolean;
-}
-
-// User schema
 const schema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
@@ -29,27 +15,8 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    password: {
-      type: String,
-      required: true,
-    },
-    confirmed: {
-      type: Boolean,
-      default: false,
-    },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "users" }
 );
 
-// Method for hashing password after every change
-schema.pre<UserDoc>("save", function (): void {
-  if (this.isModified("password")) {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(this.password, salt);
-
-    this.password = hash;
-  }
-});
-
-// User model
-export const User = mongoose.model<UserDoc>("User", schema, "users");
+export const User = mongoose.model<IUser>("User", schema);

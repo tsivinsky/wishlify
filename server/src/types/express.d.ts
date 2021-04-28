@@ -1,8 +1,9 @@
+import { IUser } from "../models";
+
 declare global {
   namespace Express {
     interface Request {
-      messages?: IMessages;
-      user?: TUser;
+      user?: IUser;
     }
   }
 }
