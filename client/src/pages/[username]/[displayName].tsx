@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../helpers";
-import { useAuth, useMessage } from "../../store";
+import { useMessage, useSession } from "../../store";
 import { Product } from "../../components";
 import { IWishlist, PageProps } from "../../types";
 
@@ -11,15 +11,15 @@ interface Inputs {
 
 export default function Wishlist({ router }: PageProps) {
   const { username, displayName } = router.query;
-  const { auth } = useAuth();
+  const { token } = useSession();
   const { setMessage } = useMessage();
   const [wishlist, setWishlist] = useState<IWishlist>();
   const { register, handleSubmit } = useForm<Inputs>();
 
   useEffect(() => {
-    if (username && displayName && auth.token) {
+    if (username && displayName && token) {
       api.wishlists
-        .getWishlistByDisplayName(auth.token as string, displayName as string)
+        .getWishlistByDisplayName(token as string, displayName as string)
         .then((wishlist) => {
           if (wishlist.owner.username !== username) {
             router.push("/");
@@ -29,22 +29,18 @@ export default function Wishlist({ router }: PageProps) {
         })
         .catch((err) => setMessage({ text: err }));
     }
-  }, [username, displayName, auth.token]);
+  }, [username, displayName, token]);
 
   function addProduct(data: Inputs) {
     api.products
-      .addProductToWishlist(auth.token as string, displayName as string, data)
+      .addProductToWishlist(token as string, displayName as string, data)
       .then((wishlist) => setWishlist(wishlist))
       .catch((err) => setMessage({ text: err }));
   }
 
   function removeProduct(_id: string) {
     api.products
-      .removeProductFromWishlist(
-        auth.token as string,
-        displayName as string,
-        _id
-      )
+      .removeProductFromWishlist(token as string, displayName as string, _id)
       .then((wishlist) => setWishlist(wishlist))
       .catch((err) => setMessage({ text: err }));
   }
@@ -74,5 +70,6 @@ export default function Wishlist({ router }: PageProps) {
     );
   }
 
+  // TODO: Show loading screen
   return null;
 }

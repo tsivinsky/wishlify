@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth, useLoading, useMessage } from "../store";
-import { isUserAuthorized, api } from "../helpers";
+import { useLoading, useMessage, useSession } from "../store";
+import { api } from "../helpers";
 import {
   JoinForm,
   JoinFormInputs,
@@ -10,30 +10,30 @@ import {
 import { PageProps } from "../types";
 
 export default function Index({ router }: PageProps) {
-  const { auth, setAuth } = useAuth();
+  const { user, setSession } = useSession();
   const { loading, stopLoading } = useLoading();
   const { setMessage } = useMessage();
 
   const [hasAccount, setHasAccount] = useState<boolean>(false);
 
-  // Redirect to /home if user is authorized
+  // Redirect to /home if user is authenticated
   useEffect(() => {
-    if (isUserAuthorized(auth)) {
+    if (user) {
       router.push("/home");
     }
-  }, [auth]);
+  }, [user]);
 
   useEffect(() => {
     if (loading) {
       stopLoading();
     }
-  }, [auth]);
+  }, [user]);
 
   function join(data: JoinFormInputs) {
     api.auth
       .register(data)
       .then(({ token, user }) => {
-        setAuth(token, user);
+        setSession(token, user);
 
         router.push("/home");
       })
@@ -44,7 +44,7 @@ export default function Index({ router }: PageProps) {
     api.auth
       .login(data)
       .then(({ token, user }) => {
-        setAuth(token, user);
+        setSession(token, user);
 
         router.push("/home");
       })

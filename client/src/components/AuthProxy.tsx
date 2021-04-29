@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { api } from "../helpers";
-import { useAuth, useLoading, useMessage, useTokenStore } from "../store";
+import { useLoading, useMessage, useSession } from "../store";
 
 export const AuthProxy: React.FC = (props) => {
-  const { setAuth } = useAuth();
-  const { token } = useTokenStore();
+  const { token, setSession } = useSession();
   const { loading, stopLoading } = useLoading();
   const { setMessage } = useMessage();
 
@@ -12,7 +11,7 @@ export const AuthProxy: React.FC = (props) => {
     if (token) {
       api.user
         .getAuthorizedUser(token)
-        .then((user) => setAuth(token, user))
+        .then((user) => setSession(token, user))
         .catch((err) => setMessage({ text: err }))
         .then(() => stopLoading());
     } else {
@@ -20,9 +19,10 @@ export const AuthProxy: React.FC = (props) => {
     }
   }, [token]);
 
-  if (!loading) {
-    return <>{props.children}</>;
+  if (loading) {
+    // TODO: Show loading screen
+    return null;
   }
 
-  return null;
+  return <>{props.children}</>;
 };

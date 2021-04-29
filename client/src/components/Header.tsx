@@ -1,28 +1,27 @@
 import Link from "next/link";
 import { NextRouter } from "next/router";
-import { isUserAuthorized } from "../helpers";
-import { useAuth } from "../store";
+import { useSession } from "../store";
 
 export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
-  const { auth, removeAuth } = useAuth();
+  const { user, removeSession } = useSession();
 
   function logout() {
     if (!confirm("Are you sure?")) return;
 
-    removeAuth();
+    removeSession();
 
     router.push("/");
   }
 
   return (
     <header>
-      <Link href={auth.user !== null ? "/home" : "/"}>
+      <Link href={user ? "/home" : "/"}>
         <a>
           <h1>Wishlify</h1>
         </a>
       </Link>
 
-      {isUserAuthorized(auth) && (
+      {user && (
         <nav>
           <Link href="/account">
             <a>Account</a>

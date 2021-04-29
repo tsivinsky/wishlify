@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth, useMessage, useWishlists } from "../store";
+import { useMessage, useSession, useWishlists } from "../store";
 import { api } from "../helpers";
 import { Wishlist } from "../components";
 import { IWishlist, PageProps } from "../types";
@@ -11,7 +11,7 @@ interface Inputs {
 }
 
 export default function Home({}: PageProps) {
-  const { auth } = useAuth();
+  const { token, user } = useSession();
   const { wishlists, setWishlists } = useWishlists();
   const { setMessage } = useMessage();
 
@@ -19,16 +19,16 @@ export default function Home({}: PageProps) {
 
   useEffect(() => {
     api.wishlists
-      .getAuthorizedUserWishlists(auth.token as string)
+      .getAuthorizedUserWishlists(token as string)
       .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
       .catch((err) => setMessage({ text: err }));
   }, []);
 
   async function createWishlist(data: Inputs) {
     api.wishlists
-      .createNewWishlist(auth.token as string, {
+      .createNewWishlist(token as string, {
         ...data,
-        owner: auth.user!._id,
+        owner: user!._id,
       })
       .then((wishlist) => setWishlists([...wishlists, wishlist as IWishlist]))
       .catch((err) => setMessage({ text: err }));
@@ -36,7 +36,7 @@ export default function Home({}: PageProps) {
 
   async function deleteWishlist(displayName: string) {
     api.wishlists
-      .deleteWishlist(auth.token as string, displayName)
+      .deleteWishlist(token as string, displayName)
       .then((wishlist) =>
         setWishlists(wishlists.filter((w) => w._id !== wishlist._id))
       )
@@ -71,7 +71,7 @@ export default function Home({}: PageProps) {
             <Wishlist
               key={i}
               {...wishlist}
-              username={auth.user!.username}
+              username={user!.username}
               onDelete={deleteWishlist}
             />
           ))

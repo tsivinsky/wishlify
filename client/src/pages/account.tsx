@@ -1,11 +1,12 @@
+import { useSession } from "../store";
 import { PageProps } from "../types";
 
 export default function Account({}: PageProps) {
-  const { auth } = useAuth();
+  const { user } = useSession();
 
   return (
     <div className="home-page">
-      <h1>Hello, {auth.user!.name}!</h1>
+      <h1>Hello, {user!.username}!</h1>
     </div>
   );
 }
