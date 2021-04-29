@@ -1,9 +1,13 @@
-import create from "zustand";
-import { combine } from "zustand/middleware";
+import create, { State } from "zustand";
 
-export const useLoading = create(
-  combine({ loading: true }, (set) => ({
-    startLoading: () => set({ loading: true }),
-    stopLoading: () => set({ loading: false }),
-  }))
-);
+interface IState extends State {
+  loading: boolean;
+  startLoading: () => void;
+  stopLoading: () => void;
+}
+
+export const useLoading = create<IState>((set) => ({
+  loading: true,
+  startLoading: () => set({ loading: true }),
+  stopLoading: () => set({ loading: false }),
+}));

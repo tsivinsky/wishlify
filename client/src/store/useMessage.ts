@@ -1,22 +1,18 @@
 import create, { State } from "zustand";
 import { IMessage } from "../types";
 
-interface IMessage {
-  text: string;
+interface IState extends State {
+  message: IMessage;
+  setMessage: (message: IMessage) => void;
+  removeMessage: () => void;
 }
 
-const initialState: IMessage = {
-  text: "",
-};
-
-export const useMessage = create(
-  combine(
-    {
-      message: initialState,
-    },
-    (set) => ({
-      setMessage: (message: IMessage) => set({ message }),
-      removeMessage: () => set({ message: initialState }),
-    })
-  )
-);
+export const useMessage = create<IState>((set) => ({
+  message: null,
+  setMessage: (message) => {
+    set({ message });
+  },
+  removeMessage: () => {
+    set({ message: null });
+  },
+}));
