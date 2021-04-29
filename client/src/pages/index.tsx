@@ -7,6 +7,7 @@ import {
   LoginForm,
   LoginFormInputs,
 } from "../components";
+import { PageProps } from "../types";
 
 export default function Index({ router }: PageProps) {
   const { auth, setAuth } = useAuth();

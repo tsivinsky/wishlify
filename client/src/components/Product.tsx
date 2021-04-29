@@ -1,4 +1,5 @@
 import React from "react";
+import { IProduct } from "../types";
 
 interface Props extends IProduct {
   onRemove: (_id: string) => void;

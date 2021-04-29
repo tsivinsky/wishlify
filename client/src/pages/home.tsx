@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAuth, useMessage, useWishlists } from "../store";
 import { api } from "../helpers";
 import { Wishlist } from "../components";
+import { IWishlist, PageProps } from "../types";
 
 interface Inputs {
   name: string;

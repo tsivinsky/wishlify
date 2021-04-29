@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { api } from "../../helpers";
 import { useAuth, useMessage } from "../../store";
 import { Product } from "../../components";
+import { IWishlist, PageProps } from "../../types";
 
 interface Inputs {
   url: string;

@@ -1,4 +1,4 @@
-import { useAuth } from "../store";
+import { PageProps } from "../types";
 
 export default function Account({}: PageProps) {
   const { auth } = useAuth();

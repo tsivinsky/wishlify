@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { IUser } from "../types";
 
 interface Props {
   _id: string;
