@@ -1,4 +1,4 @@
-import { createAxiosInstance } from "../axiosInstance";
+import { createAxiosInstance } from "../axios";
 import { IWishlist, Response } from "../../types";
 
 export async function addProductToWishlist(

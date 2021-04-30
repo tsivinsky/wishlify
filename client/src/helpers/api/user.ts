@@ -1,4 +1,4 @@
-import { createAxiosInstance } from "../axiosInstance";
+import { createAxiosInstance } from "../axios";
 import { IUser, Response } from "../../types";
 
 export async function getAuthorizedUser(token: string): Promise<IUser> {
@@ -10,11 +10,7 @@ export async function getAuthorizedUser(token: string): Promise<IUser> {
 
       resolve(response.data.data.user);
     } catch (err) {
-      if (err.response) {
-        reject(err.response.data);
-      }
-
-      reject(err.message);
+      reject(err);
     }
   });
 }

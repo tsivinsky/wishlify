@@ -1,5 +1,4 @@
-import { axios } from "../axiosInstance";
-import { Response } from "../../types";
+import { axios } from "../axios";
 
 export async function signin(data: { email: string }): Promise<void> {
   return new Promise(async (resolve, reject) => {
