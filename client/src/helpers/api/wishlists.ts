@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../axiosInstance";
-import { IWishlist } from "../../types";
+import { IWishlist, Response } from "../../types";
 
 export async function getAuthorizedUserWishlists(
   token: string
@@ -8,15 +8,17 @@ export async function getAuthorizedUserWishlists(
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.get("/wishlists");
+      const response = await axios.get<
+        Response<{ wishlists: Array<IWishlist> }>
+      >("/user/wishlists");
 
-      resolve(response.data);
+      resolve(response.data.data.wishlists);
     } catch (err) {
       if (err.response) {
         reject(err.response.data);
       }
 
-      reject(err as string);
+      reject(err.message);
     }
   });
 }
@@ -35,36 +37,18 @@ export async function createNewWishlist(
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post("/wishlists", data);
+      const response = await axios.post<Response<{ wishlist: IWishlist }>>(
+        "/user/wishlists",
+        data
+      );
 
-      resolve(response.data);
+      resolve(response.data.data.wishlist);
     } catch (err) {
       if (err.response) {
         reject(err.response.data);
       }
 
-      reject(err as string);
-    }
-  });
-}
-
-export async function deleteWishlist(
-  token: string,
-  displayName: string
-): Promise<IWishlist> {
-  const axios = createAxiosInstance({}, token);
-
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await axios.delete(`/wishlists/${displayName}`);
-
-      resolve(response.data);
-    } catch (err) {
-      if (err.response) {
-        reject(err.response.data);
-      }
-
-      reject(err as string);
+      reject(err.message);
     }
   });
 }
@@ -77,15 +61,42 @@ export async function getWishlistByDisplayName(
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.get(`/wishlists/${displayName}`);
+      const response = await axios.get<Response<{ wishlist: IWishlist }>>(
+        `/wishlists/${displayName}`
+      );
 
-      resolve(response.data);
+      resolve(response.data.data.wishlist);
     } catch (err) {
       if (err.response) {
         reject(err.response.data);
       }
 
-      reject(err as string);
+      reject(err.message);
+    }
+  });
+}
+
+// TODO: Create helper function for updating wishlist
+
+export async function deleteWishlist(
+  token: string,
+  displayName: string
+): Promise<IWishlist> {
+  const axios = createAxiosInstance({}, token);
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.delete<Response<{ wishlist: IWishlist }>>(
+        `/wishlists/${displayName}`
+      );
+
+      resolve(response.data.data.wishlist);
+    } catch (err) {
+      if (err.response) {
+        reject(err.response.data);
+      }
+
+      reject(err.message);
     }
   });
 }

@@ -1,15 +1,12 @@
 import { axios } from "../axiosInstance";
+import { Response } from "../../types";
 
-interface SigninResponse {
-  message: string;
-}
-
-export async function signin(data: { email: string }): Promise<SigninResponse> {
+export async function signin(data: { email: string }): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post("/auth/signin", data);
+      await axios.post<Response>("/auth/signin", data);
 
-      resolve(response.data);
+      resolve();
     } catch (err) {
       if (err.response) {
         reject(err.response.data);

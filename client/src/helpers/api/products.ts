@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../axiosInstance";
-import { IWishlist } from "../../types";
+import { IWishlist, Response } from "../../types";
 
 export async function addProductToWishlist(
   token: string,
@@ -10,18 +10,18 @@ export async function addProductToWishlist(
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.post(
+      const response = await axios.post<Response<{ wishlist: IWishlist }>>(
         `/wishlists/${displayName}/products`,
         data
       );
 
-      resolve(response.data);
+      resolve(response.data.data.wishlist);
     } catch (err) {
       if (err.response) {
         reject(err.response.data);
       }
 
-      reject(err);
+      reject(err.message);
     }
   });
 }
@@ -35,17 +35,17 @@ export async function removeProductFromWishlist(
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.delete(
+      const response = await axios.delete<Response<{ wishlist: IWishlist }>>(
         `/wishlists/${wishlistName}/products/${productID}`
       );
 
-      resolve(response.data);
+      resolve(response.data.data.wishlist);
     } catch (err) {
       if (err.response) {
         reject(err.response.data);
       }
 
-      reject(err as string);
+      reject(err.message);
     }
   });
 }

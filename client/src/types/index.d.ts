@@ -4,6 +4,11 @@ export interface PageProps {
   router: Router;
 }
 
+export interface Response<T = undefined> {
+  message: string;
+  data: T;
+}
+
 export interface IUser {
   _id: string;
   username: string;
