@@ -13,7 +13,7 @@ export default function Signin() {
   async function signinByEmail(data: Inputs) {
     api.auth
       .signin(data)
-      .then((resp) =>
+      .then(() =>
         setMessage({ text: "We've sent you an email with confirmation link" })
       )
       .catch((err) => setMessage({ text: err }));
