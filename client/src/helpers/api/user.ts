@@ -1,4 +1,5 @@
 import { createAxiosInstance } from "../axiosInstance";
+import { IUser } from "../../types";
 
 export async function getAuthorizedUser(token: string): Promise<IUser> {
   const axios = createAxiosInstance({}, token);

@@ -1,4 +1,5 @@
 import { createAxiosInstance } from "../axiosInstance";
+import { IWishlist } from "../../types";
 
 export async function getAuthorizedUserWishlists(
   token: string

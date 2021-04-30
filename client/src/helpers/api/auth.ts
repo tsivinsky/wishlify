@@ -1,4 +1,5 @@
 import { axios } from "../axiosInstance";
+import { IUser } from "../../types";
 
 interface LoginProps {
   email: string;
