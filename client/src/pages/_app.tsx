@@ -6,7 +6,7 @@ import "../scss/style.scss";
 export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <AuthProxy>
-      {router.pathname !== "/" && <Header router={router} />}
+      <Header router={router} />
       <Notification />
       <Component router={router} {...pageProps} />
     </AuthProxy>
