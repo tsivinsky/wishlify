@@ -1,17 +1,14 @@
 import { transporter } from "../transporter";
 
-export async function sendConfirmationEmail(
-  email: string,
-  confirmationCode: number
-) {
+export async function sendConfirmationEmail(email: string, url: string) {
   const text = `
-    Hey, you signed in to Wishlify. Please, verify that it was actually you by pasting the code below to the form on the signin page.
+    Hey, you signed in to Wishlify. Please, verify that it was actually you by clicking the link below.
 
-    Your code is ${confirmationCode}
+    ${url}
   `;
 
   await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from: `Wishlify <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Wishlify - Sign In",
     text,
