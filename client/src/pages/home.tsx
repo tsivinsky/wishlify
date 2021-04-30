@@ -66,14 +66,9 @@ export default function Home({}: PageProps) {
       </form>
 
       <div className="wishlists">
-        {wishlists.length > 0 ? (
+        {user && wishlists.length > 0 ? (
           wishlists.map((wishlist, i) => (
-            <Wishlist
-              key={i}
-              {...wishlist}
-              username={user!.username}
-              onDelete={deleteWishlist}
-            />
+            <Wishlist key={i} {...wishlist} onDelete={deleteWishlist} />
           ))
         ) : (
           <span>You have no wishlists.</span>

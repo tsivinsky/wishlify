@@ -1,26 +1,21 @@
 import React from "react";
 import Link from "next/link";
-import { IUser } from "../types";
+import { IWishlist } from "../types";
+import { useSession } from "../store";
 
-interface Props {
-  _id: string;
-  name: string;
-  displayName: string;
-  description: string;
-  owner: IUser;
-  createdAt: Date;
-  updatedAt: Date;
+interface Props extends IWishlist {
   onDelete: (_id: string) => void;
-  username: string;
 }
 
 export const Wishlist: React.FC<Props> = (props) => {
+  const { user } = useSession();
+
   return (
     <div className="wishlist">
       <h2>{props.name}</h2>
       <p>{props.description}</p>
       <div className="controls">
-        <Link href={`/${props.username}/${props.displayName}`}>
+        <Link href={`/${user!.username}/${props.displayName}`}>
           <a>View</a>
         </Link>
         <button
