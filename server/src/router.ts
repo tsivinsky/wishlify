@@ -13,7 +13,6 @@ router.use("/wishlists/:displayName", verifyUser, sanitizeWishlistDisplayName);
 
 // Authentication routes
 router.post("/auth/signin", authController.signin);
-router.post("/auth/verifyCode", authController.verifyCode);
 
 // User routes
 router.get("/user", userController.getUser);
