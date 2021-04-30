@@ -10,18 +10,17 @@
 
 html,
 body,
-#root,
-#root:first-child {
+#__next {
   height: 100%;
 }
 
-a {
-  text-decoration: none;
-  color: #000;
-  &:hover {
-    text-decoration: underline;
-  }
+#__next {
+  display: grid;
+  grid-template-rows: 7% 1fr;
 }
 
-@import "./partials/header";
+@import "./partials/vars";
+@import "./partials/defaults";
 @import "./partials/notification";
+@import "./partials/header";
+@import "./partials/signin-page";
