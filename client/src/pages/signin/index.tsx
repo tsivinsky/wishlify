@@ -21,10 +21,8 @@ export default function Signin() {
 
   return (
     <div id="page" className="signin-page">
-      <h2>Sign In to Wishlify</h2>
-
       <form id="signin-email-form" onSubmit={handleSubmit(signinByEmail)}>
-        <div>
+        <div className="form-group">
           <label htmlFor="email-input">Email</label>
           <input type="email" name="email" id="email-input" ref={register} />
         </div>

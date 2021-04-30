@@ -1,0 +1,15 @@
+.signin-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+
+  form {
+    width: 15%;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
