@@ -15,20 +15,25 @@ export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
 
   return (
     <header>
-      <Link href={user ? "/home" : "/"}>
-        <a>
-          <h1>Wishlify</h1>
-        </a>
-      </Link>
+      <h1>Wishlify</h1>
 
-      {user && (
+      {user ? (
         <nav>
+          <Link href="/home">
+            <a>Home</a>
+          </Link>
           <Link href="/account">
             <a>Account</a>
           </Link>
           <button className="btn btn-logout" onClick={logout}>
             Log out
           </button>
+        </nav>
+      ) : (
+        <nav>
+          <Link href="/">
+            <a>Home</a>
+          </Link>
         </nav>
       )}
     </header>
