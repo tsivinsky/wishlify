@@ -1,0 +1,30 @@
+@mixin buttonOnHover($color) {
+  border-color: $color;
+  box-shadow: 0 0 0 3px rgba($color: $color, $alpha: 0.5);
+}
+
+.btn {
+  border: 1px solid $secondary;
+  background: none;
+  padding: 7px;
+  font-size: $font-lg;
+  cursor: pointer;
+  border-radius: 3px;
+  min-width: 6rem;
+  transition: all 0.3s ease;
+  transition-property: border-color, box-shadow;
+
+  &.btn-primary {
+    border-color: $primary-800;
+
+    &:hover {
+      @include buttonOnHover($primary);
+    }
+  }
+
+  &.btn-secondary {
+    &:hover {
+      @include buttonOnHover($secondary);
+    }
+  }
+}

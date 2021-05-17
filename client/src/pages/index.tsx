@@ -22,15 +22,20 @@ export default function Index({ router }: PageProps) {
 
   return (
     <div id="page" className="welcome-page">
-      <div className="left-side">
+      <div id="heading">
         <h1>Wishlify</h1>
+        <div>
+          <p>
+            Wishlify allows you to store all your most wanted products in one
+            place. Just create a wishlist and add the product in it by pasting
+            its url.
+          </p>
+        </div>
       </div>
 
-      <div className="right-side">
-        <Link href="/signin">
-          <a>Sign In</a>
-        </Link>
-      </div>
+      <Link href="/signin">
+        <button className="btn btn-primary">Sign In</button>
+      </Link>
     </div>
   );
 }

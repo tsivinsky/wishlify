@@ -10,17 +10,15 @@
 
 html,
 body,
-#__next {
+#__next,
+#page {
   height: 100%;
 }
 
-#__next {
-  display: grid;
-  grid-template-rows: 7% 1fr;
-}
+@import "./theme/vars";
+@import "./theme/button";
+@import "./theme/form";
+@import "./theme/link";
 
-@import "./partials/vars";
-@import "./partials/defaults";
-@import "./partials/notification";
-@import "./partials/header";
-@import "./partials/signin-page";
+@import "./pages/welcome";
+@import "./pages/signin";
