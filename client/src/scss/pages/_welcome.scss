@@ -1,0 +1,22 @@
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+
+  #heading {
+    text-align: center;
+
+    h1 {
+      font-size: $font-5xl;
+      margin-bottom: 5px;
+    }
+
+    p {
+      max-width: 55%;
+      margin: 0 auto;
+      font-size: $font-lg;
+    }
+  }
+}

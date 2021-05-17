@@ -1,0 +1,25 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: $font-lg;
+  }
+}
+
+input {
+  border: 1px solid;
+  padding: 5px;
+  font-size: $font-lg;
+  transition: all 0.2s ease;
+  transition-property: border-color;
+
+  &::placeholder {
+    font-style: italic;
+    font-size: $font-base;
+  }
+
+  &:focus {
+    border-color: $primary;
+  }
+}
