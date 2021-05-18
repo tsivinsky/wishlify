@@ -14,6 +14,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
   }, [message]);
 
+  useEffect(() => {
+    removeMessage();
+  }, [router.route]);
+
   return (
     <AuthProxy>
       <Notification />
