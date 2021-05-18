@@ -15,9 +15,12 @@ export default function Signin() {
     api.auth
       .signin(data)
       .then(() =>
-        setMessage({ text: "We've sent you an email with confirmation link" })
+        setMessage({
+          text: "We've sent you an email with confirmation link",
+          type: "success",
+        })
       )
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }
 
   return (

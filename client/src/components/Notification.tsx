@@ -6,8 +6,8 @@ export const Notification: React.FC = () => {
 
   if (message) {
     return (
-      <div className="notification">
-        <h2>{message.text}</h2>
+      <div className={`notification ${message.type}`}>
+        <p>{message.text}</p>
       </div>
     );
   }

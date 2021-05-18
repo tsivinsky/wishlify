@@ -21,7 +21,7 @@ export default function Home({}: PageProps) {
     api.wishlists
       .getAuthorizedUserWishlists(token as string)
       .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }, []);
 
   async function createWishlist(data: Inputs) {
@@ -31,7 +31,7 @@ export default function Home({}: PageProps) {
         owner: user!._id,
       })
       .then((wishlist) => setWishlists([...wishlists, wishlist as IWishlist]))
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }
 
   async function deleteWishlist(displayName: string) {
@@ -40,7 +40,7 @@ export default function Home({}: PageProps) {
       .then((wishlist) =>
         setWishlists(wishlists.filter((w) => w._id !== wishlist._id))
       )
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }
 
   return (

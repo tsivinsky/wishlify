@@ -43,4 +43,5 @@ export interface IProduct {
 
 export type IMessage = {
   text: string;
+  type: "success" | "error";
 } | null;
