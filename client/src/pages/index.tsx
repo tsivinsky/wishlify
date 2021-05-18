@@ -34,7 +34,7 @@ export default function Index({ router }: PageProps) {
       </div>
 
       <Link href="/signin">
-        <button className="btn btn-primary">Sign In</button>
+        <button className="btn btn-primary font-lg">Sign In</button>
       </Link>
     </div>
   );

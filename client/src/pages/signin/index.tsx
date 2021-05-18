@@ -38,7 +38,7 @@ export default function Signin() {
             placeholder="you@gmail.com"
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary font-lg">
           Sign In
         </button>
       </form>
