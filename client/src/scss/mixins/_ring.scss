@@ -1,0 +1,4 @@
+@mixin ring($color) {
+  border-color: $color;
+  box-shadow: 0 0 0 3px rgba($color: $color, $alpha: 0.5);
+}

@@ -16,6 +16,8 @@ body,
 }
 
 @import "./theme/vars";
+@import "./mixins/ring";
+
 @import "./theme/button";
 @import "./theme/form";
 @import "./theme/link";
