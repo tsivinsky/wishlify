@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../helpers";
 import { useMessage, useSession } from "../../store";
-import { Product } from "../../components";
+import { Header, Product } from "../../components";
 import { IWishlist, PageProps } from "../../types";
 
 interface Inputs {
@@ -47,7 +47,9 @@ export default function Wishlist({ router }: PageProps) {
 
   if (wishlist) {
     return (
-      <div className="wishlist-page">
+      <div id="page" className="wishlist-page">
+        <Header router={router} />
+
         <h1>{wishlist.name}</h1>
         <p>{wishlist.description || "No description"}</p>
 

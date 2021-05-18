@@ -3,10 +3,10 @@ import { NextRouter } from "next/router";
 import { useSession } from "../store";
 
 export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
-  const { user, removeSession } = useSession();
+  const { removeSession } = useSession();
 
   function logout() {
-    if (!confirm("Are you sure?")) return;
+    if (!confirm("Are you sure you want to sign out?")) return;
 
     removeSession();
 
@@ -17,25 +17,13 @@ export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
     <header>
       <h1>Wishlify</h1>
 
-      {user ? (
-        <nav>
-          <Link href="/home">
-            <a>Home</a>
-          </Link>
-          <Link href="/account">
-            <a>Account</a>
-          </Link>
-          <button className="btn btn-logout" onClick={logout}>
-            Log out
-          </button>
-        </nav>
-      ) : (
-        <nav>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </nav>
-      )}
+      <nav>
+        <Link href="/home">Home</Link>
+        <Link href="/account">Account</Link>
+        <button className="btn btn-secondary" onClick={logout}>
+          Sign Out
+        </button>
+      </nav>
     </header>
   );
 };
