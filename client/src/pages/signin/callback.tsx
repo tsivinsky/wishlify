@@ -17,7 +17,7 @@ export default function Callback({ router }: PageProps) {
 
           router.push("/home");
         })
-        .catch((err) => setMessage({ text: err }));
+        .catch((err) => setMessage({ text: err.message, type: "error" }));
     }
   }, [token]);
 
