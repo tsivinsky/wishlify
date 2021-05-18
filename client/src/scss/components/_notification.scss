@@ -1,0 +1,20 @@
+.notification {
+  position: absolute;
+  bottom: 20px;
+  left: 30px;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 4px;
+  width: 15%;
+  line-height: 1.4rem;
+
+  &.success {
+    border-color: $success;
+    background-color: rgba($success, 0.4);
+  }
+
+  &.error {
+    border-color: $error;
+    background-color: rgba($error, 0.4);
+  }
+}
