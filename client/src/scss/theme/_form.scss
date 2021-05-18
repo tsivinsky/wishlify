@@ -10,9 +10,11 @@
 input {
   border: 1px solid;
   padding: 5px;
+  margin: 3px 0;
   font-size: $font-lg;
+  border-radius: 3px;
   transition: all 0.2s ease;
-  transition-property: border-color;
+  transition-property: border-color, box-shadow;
 
   &::placeholder {
     font-style: italic;
@@ -20,6 +22,6 @@ input {
   }
 
   &:focus {
-    border-color: $primary;
+    @include ring($primary);
   }
 }
