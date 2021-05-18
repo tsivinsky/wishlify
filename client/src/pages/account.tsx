@@ -1,11 +1,14 @@
+import { Header } from "../components";
 import { useSession } from "../store";
 import { PageProps } from "../types";
 
-export default function Account({}: PageProps) {
+export default function Account({ router }: PageProps) {
   const { user } = useSession();
 
   return (
-    <div className="home-page">
+    <div id="page" className="account-page">
+      <Header router={router} />
+
       <h1>Hello, {user!.username}!</h1>
     </div>
   );

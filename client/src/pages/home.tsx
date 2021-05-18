@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMessage, useSession, useWishlists } from "../store";
 import { api } from "../helpers";
-import { Wishlist } from "../components";
+import { Header, Wishlist } from "../components";
 import { IWishlist, PageProps } from "../types";
 
 interface Inputs {
@@ -10,7 +10,7 @@ interface Inputs {
   description: string;
 }
 
-export default function Home({}: PageProps) {
+export default function Home({ router }: PageProps) {
   const { token, user } = useSession();
   const { wishlists, setWishlists } = useWishlists();
   const { setMessage } = useMessage();
@@ -45,7 +45,7 @@ export default function Home({}: PageProps) {
 
   return (
     <div className="home-page">
-      <h1>Home page</h1>
+      <Header router={router} />
 
       <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
         <h3>Create new wishlist</h3>
