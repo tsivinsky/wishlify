@@ -27,7 +27,7 @@ export default function Wishlist({ router }: PageProps) {
 
           setWishlist(wishlist);
         })
-        .catch((err) => setMessage({ text: err }));
+        .catch((err) => setMessage({ text: err.message, type: "error" }));
     }
   }, [username, displayName, token]);
 
@@ -35,14 +35,14 @@ export default function Wishlist({ router }: PageProps) {
     api.products
       .addProductToWishlist(token as string, displayName as string, data)
       .then((wishlist) => setWishlist(wishlist))
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }
 
   function removeProduct(_id: string) {
     api.products
       .removeProductFromWishlist(token as string, displayName as string, _id)
       .then((wishlist) => setWishlist(wishlist))
-      .catch((err) => setMessage({ text: err }));
+      .catch((err) => setMessage({ text: err.message, type: "error" }));
   }
 
   if (wishlist) {

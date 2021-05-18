@@ -12,7 +12,7 @@ export const AuthProxy: React.FC = (props) => {
       api.user
         .getAuthorizedUser(token)
         .then((user) => setSession(token, user))
-        .catch((err) => setMessage({ text: err }))
+        .catch((err) => setMessage({ text: err.message, type: "error" }))
         .then(() => stopLoading());
     } else {
       stopLoading();
