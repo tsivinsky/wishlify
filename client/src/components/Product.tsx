@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { IProduct } from "../types";
 
@@ -8,8 +9,9 @@ interface Props extends IProduct {
 export const Product: React.FC<Props> = (props) => {
   return (
     <div className="product">
-      <img src={props.image} alt={props.title} />
       <div className="info">
+        <img src={props.image} alt={props.title} />
+
         <h2>{props.title}</h2>
         <div className="price">
           <p>
@@ -23,8 +25,18 @@ export const Product: React.FC<Props> = (props) => {
             {props.shipping}
           </p>
         </div>
-        <a href={props.url}>View on {props.shop}</a>
-        <button onClick={() => props.onRemove(props._id)}>Remove</button>
+      </div>
+
+      <div className="controls">
+        <Link href={props.url}>
+          <button className="btn btn-primary">View on {props.shop}</button>
+        </Link>
+        <button
+          className="btn btn-danger"
+          onClick={() => props.onRemove(props._id)}
+        >
+          Remove
+        </button>
       </div>
     </div>
   );

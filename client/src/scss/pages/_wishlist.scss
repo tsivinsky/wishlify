@@ -1,0 +1,55 @@
+.wishlist-page {
+  #info {
+    width: 50%;
+    margin: 0 auto;
+
+    #add-product-form {
+      margin-top: 10px;
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        button {
+          align-self: flex-end;
+          min-width: 80px;
+        }
+      }
+    }
+  }
+
+  #products {
+    padding: 10px;
+
+    h3 {
+      @include subtitle;
+      margin-bottom: 10px;
+    }
+
+    & > div {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+
+      .product {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid;
+        padding: 15px;
+
+        img {
+          max-width: 200px;
+        }
+
+        .controls {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
+    }
+  }
+}
