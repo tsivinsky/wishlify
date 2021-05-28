@@ -50,24 +50,41 @@ export default function Wishlist({ router }: PageProps) {
       <div id="page" className="wishlist-page">
         <Header router={router} />
 
-        <h1>{wishlist.name}</h1>
-        <p>{wishlist.description || "No description"}</p>
-
-        <form id="add-product-form" onSubmit={handleSubmit(addProduct)}>
-          <div className="url">
-            <label htmlFor="url">URL</label>
-            <input type="url" name="url" id="url" ref={register} />
+        <section id="info">
+          <div id="wishlist-info">
+            <h2>{wishlist.name}</h2>
+            <p>{wishlist.description || "No description"}</p>
           </div>
-          <button type="submit">Add Product</button>
-        </form>
 
-        <div className="products">
-          {wishlist.products.length > 0
-            ? wishlist.products.map((product, i) => (
+          <div id="add-product-form">
+            <h3>Add new product</h3>
+
+            <form onSubmit={handleSubmit(addProduct)}>
+              <div className="form-group">
+                <label htmlFor="url">Product url</label>
+                <input type="url" name="url" id="url" ref={register} />
+              </div>
+
+              <button type="submit" className="btn btn-primary">
+                Add
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section id="products">
+          <h3>Products</h3>
+
+          <div>
+            {wishlist.products.length > 0 ? (
+              wishlist.products.map((product, i) => (
                 <Product key={i} {...product} onRemove={removeProduct} />
               ))
-            : "No products. Add one."}
-        </div>
+            ) : (
+              <p>No products. Add one.</p>
+            )}
+          </div>
+        </section>
       </div>
     );
   }
