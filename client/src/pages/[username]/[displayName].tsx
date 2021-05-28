@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { api } from "../../helpers";
-import { useMessage, useSession } from "../../store";
+import { useSession } from "../../store";
 import { Header, Product } from "../../components";
 import { IWishlist, PageProps } from "../../types";
 
@@ -12,7 +13,6 @@ interface Inputs {
 export default function Wishlist({ router }: PageProps) {
   const { username, displayName } = router.query;
   const { token } = useSession();
-  const { setMessage } = useMessage();
   const [wishlist, setWishlist] = useState<IWishlist>();
   const { register, handleSubmit } = useForm<Inputs>();
 
@@ -27,7 +27,7 @@ export default function Wishlist({ router }: PageProps) {
 
           setWishlist(wishlist);
         })
-        .catch((err) => setMessage({ text: err.message, type: "error" }));
+        .catch((err) => toast.error(err.message));
     }
   }, [username, displayName, token]);
 
@@ -35,14 +35,14 @@ export default function Wishlist({ router }: PageProps) {
     api.products
       .addProductToWishlist(token as string, displayName as string, data)
       .then((wishlist) => setWishlist(wishlist))
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }
 
   function removeProduct(_id: string) {
     api.products
       .removeProductFromWishlist(token as string, displayName as string, _id)
       .then((wishlist) => setWishlist(wishlist))
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }
 
   if (wishlist) {

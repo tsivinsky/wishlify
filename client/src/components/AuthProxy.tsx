@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 import { api } from "../helpers";
-import { useLoading, useMessage, useSession } from "../store";
+import { useLoading, useSession } from "../store";
 
 export const AuthProxy: React.FC = (props) => {
   const { token, setSession } = useSession();
   const { loading, stopLoading } = useLoading();
-  const { setMessage } = useMessage();
 
   useEffect(() => {
     if (token) {
       api.user
         .getAuthorizedUser(token)
         .then((user) => setSession(token, user))
-        .catch((err) => setMessage({ text: err.message, type: "error" }))
+        .catch((err) => toast.error(err.message))
         .then(() => stopLoading());
     } else {
       stopLoading();
