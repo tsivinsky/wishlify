@@ -1,0 +1,25 @@
+.account-page {
+  main {
+    width: 50%;
+    margin: 0 auto;
+
+    & > div {
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        @include subtitle;
+      }
+
+      #data {
+        display: flex;
+        flex-direction: column;
+        padding: 0 100px;
+
+        .row {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}
