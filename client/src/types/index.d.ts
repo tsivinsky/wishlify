@@ -13,8 +13,8 @@ export interface IUser {
   _id: string;
   username: string;
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IWishlist {
