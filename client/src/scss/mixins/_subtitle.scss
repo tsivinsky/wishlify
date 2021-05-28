@@ -1,0 +1,5 @@
+@mixin subtitle() {
+  padding-bottom: 5px;
+  border-bottom: 1px solid;
+  border-bottom-color: rgba($color: #000000, $alpha: 0.2);
+}
