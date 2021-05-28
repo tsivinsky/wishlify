@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { api } from "../../helpers";
-import { useMessage } from "../../store";
 
 interface Inputs {
   email: string;
@@ -9,18 +9,14 @@ interface Inputs {
 
 export default function Signin() {
   const { handleSubmit, register } = useForm<Inputs>();
-  const { setMessage } = useMessage();
 
   async function signinByEmail(data: Inputs) {
     api.auth
       .signin(data)
       .then(() =>
-        setMessage({
-          text: "We've sent you an email with confirmation link",
-          type: "success",
-        })
+        toast.success("We've sent you an email with confirmation link")
       )
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }
 
   return (

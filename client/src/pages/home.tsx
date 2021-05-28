@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useMessage, useSession, useWishlists } from "../store";
+import toast from "react-hot-toast";
+import { useSession, useWishlists } from "../store";
 import { api } from "../helpers";
 import { Header, Wishlist } from "../components";
 import { IWishlist, PageProps } from "../types";
@@ -13,7 +14,6 @@ interface Inputs {
 export default function Home({ router }: PageProps) {
   const { token, user } = useSession();
   const { wishlists, setWishlists } = useWishlists();
-  const { setMessage } = useMessage();
 
   const { register, handleSubmit } = useForm<Inputs>();
 
@@ -21,7 +21,7 @@ export default function Home({ router }: PageProps) {
     api.wishlists
       .getAuthorizedUserWishlists(token as string)
       .then((wishlists) => setWishlists(wishlists as Array<IWishlist>))
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }, []);
 
   async function createWishlist(data: Inputs) {
@@ -31,7 +31,7 @@ export default function Home({ router }: PageProps) {
         owner: user!._id,
       })
       .then((wishlist) => setWishlists([...wishlists, wishlist as IWishlist]))
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }
 
   async function deleteWishlist(displayName: string) {
@@ -40,7 +40,7 @@ export default function Home({ router }: PageProps) {
       .then((wishlist) =>
         setWishlists(wishlists.filter((w) => w._id !== wishlist._id))
       )
-      .catch((err) => setMessage({ text: err.message, type: "error" }));
+      .catch((err) => toast.error(err.message));
   }
 
   return (
