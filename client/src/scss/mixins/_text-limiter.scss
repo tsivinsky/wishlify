@@ -1,0 +1,7 @@
+@mixin text-limiter($number_of_lines: 2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $number_of_lines;
+  -webkit-box-orient: vertical;
+}

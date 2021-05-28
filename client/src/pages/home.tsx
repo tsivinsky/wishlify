@@ -47,33 +47,53 @@ export default function Home({ router }: PageProps) {
     <div className="home-page">
       <Header router={router} />
 
-      <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
-        <h3>Create new wishlist</h3>
-        <div className="name">
-          <label htmlFor="name">Name</label>
-          <input type="text" name="name" id="name" required ref={register} />
-        </div>
-        <div className="description">
-          <label htmlFor="description">Description</label>
-          <input
-            type="text"
-            name="description"
-            id="description"
-            ref={register}
-          />
-        </div>
-        <button type="submit">Create</button>
-      </form>
+      <main>
+        <aside>
+          <h3>Create new wishlist</h3>
 
-      <div className="wishlists">
-        {user && wishlists.length > 0 ? (
-          wishlists.map((wishlist, i) => (
-            <Wishlist key={i} {...wishlist} onDelete={deleteWishlist} />
-          ))
-        ) : (
-          <span>You have no wishlists.</span>
-        )}
-      </div>
+          <form
+            id="create-wishlist-form"
+            onSubmit={handleSubmit(createWishlist)}
+          >
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                required
+                ref={register}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                ref={register}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Create
+            </button>
+          </form>
+        </aside>
+
+        <div id="wishlists">
+          <h3>Your wishlists</h3>
+
+          <div>
+            {user && wishlists.length > 0 ? (
+              wishlists.map((wishlist, i) => (
+                <Wishlist key={i} {...wishlist} onDelete={deleteWishlist} />
+              ))
+            ) : (
+              <span>You have no wishlists.</span>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
