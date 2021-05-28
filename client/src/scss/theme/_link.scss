@@ -1,11 +1,10 @@
 a {
   text-decoration: none;
   color: #000;
-  border-bottom: 2px solid;
   transition: all 0.3s ease;
-  transition-property: border-bottom;
+  transition-property: color;
 
   &:hover {
-    border-bottom-color: transparent;
+    color: $primary;
   }
 }
