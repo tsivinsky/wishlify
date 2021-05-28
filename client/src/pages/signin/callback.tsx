@@ -1,12 +1,12 @@
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { api } from "../../helpers";
-import { useMessage, useSession } from "../../store";
+import { useSession } from "../../store";
 import { PageProps } from "../../types";
 
 export default function Callback({ router }: PageProps) {
   const { token } = router.query;
   const { setSession } = useSession();
-  const { setMessage } = useMessage();
 
   useEffect(() => {
     if (token) {
@@ -17,7 +17,7 @@ export default function Callback({ router }: PageProps) {
 
           router.push("/home");
         })
-        .catch((err) => setMessage({ text: err.message, type: "error" }));
+        .catch((err) => toast.error(err.message));
     }
   }, [token]);
 
