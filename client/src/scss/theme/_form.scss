@@ -5,23 +5,23 @@
   label {
     font-size: $font-lg;
   }
-}
 
-input {
-  border: 1px solid;
-  padding: 5px;
-  margin: 3px 0;
-  font-size: $font-lg;
-  border-radius: 3px;
-  transition: all 0.2s ease;
-  transition-property: border-color, box-shadow;
+  input {
+    border: 1px solid;
+    padding: 5px;
+    margin: 3px 0;
+    font-size: $font-lg;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    transition-property: border-color, box-shadow;
 
-  &::placeholder {
-    font-style: italic;
-    font-size: $font-base;
-  }
+    &::placeholder {
+      font-style: italic;
+      font-size: $font-base;
+    }
 
-  &:focus {
-    @include ring($primary);
+    &:focus {
+      @include ring($primary);
+    }
   }
 }
