@@ -17,8 +17,17 @@
   }
 
   &.btn-secondary {
+    border-color: $secondary-800;
+
     &:hover {
       @include ring($secondary);
+    }
+  }
+
+  &.btn-danger {
+    // border-color: rgba($error, 0.8);
+    &:hover {
+      @include ring($error);
     }
   }
 }
