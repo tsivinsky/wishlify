@@ -20,4 +20,12 @@
   a {
     font-style: italic;
   }
+
+  @media screen and (max-width: $small) {
+    height: 100% !important;
+
+    form {
+      width: 60%;
+    }
+  }
 }

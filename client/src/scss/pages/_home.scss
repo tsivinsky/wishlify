@@ -3,6 +3,11 @@
     display: grid;
     grid-template-columns: 20% 1fr;
     gap: 10px;
+
+    @media screen and (max-width: $small) {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   aside {
@@ -21,6 +26,10 @@
       button {
         align-self: flex-start;
       }
+    }
+
+    @media screen and (max-width: $small) {
+      padding: 10px;
     }
   }
 
@@ -71,7 +80,15 @@
             min-width: 60px;
           }
         }
+
+        @media screen and (max-width: $small) {
+          width: 100%;
+        }
       }
+    }
+
+    @media screen and (max-width: $small) {
+      padding: 10px;
     }
   }
 }

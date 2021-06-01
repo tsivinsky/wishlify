@@ -10,4 +10,12 @@ header {
     align-items: center;
     gap: 20px;
   }
+
+  @media screen and (max-width: $small) {
+    padding: 10px 15px;
+
+    nav {
+      gap: 10px;
+    }
+  }
 }

@@ -20,6 +20,17 @@
           justify-content: space-between;
         }
       }
+
+      @media screen and (max-width: $small) {
+        #data {
+          padding: 0;
+        }
+      }
+    }
+
+    @media screen and (max-width: $small) {
+      margin-top: 10px;
+      width: 90%;
     }
   }
 }
