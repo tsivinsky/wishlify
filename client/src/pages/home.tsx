@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useSession, useWishlists } from "../store";
 import { api } from "../helpers";
-import { Header, Wishlist } from "../components";
+import { Wishlist } from "../components";
 import { IWishlist, PageProps } from "../types";
 
 interface Inputs {
@@ -11,7 +11,7 @@ interface Inputs {
   description: string;
 }
 
-export default function Home({ router }: PageProps) {
+export default function Home({}: PageProps) {
   const { token, user } = useSession();
   const { wishlists, setWishlists } = useWishlists();
 
@@ -45,55 +45,42 @@ export default function Home({ router }: PageProps) {
 
   return (
     <div className="home-page">
-      <Header router={router} />
+      <aside>
+        <h3>Create new wishlist</h3>
 
-      <main>
-        <aside>
-          <h3>Create new wishlist</h3>
-
-          <form
-            id="create-wishlist-form"
-            onSubmit={handleSubmit(createWishlist)}
-          >
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                required
-                ref={register}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <input
-                type="text"
-                name="description"
-                id="description"
-                ref={register}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Create
-            </button>
-          </form>
-        </aside>
-
-        <div id="wishlists">
-          <h3>Your wishlists</h3>
-
-          <div>
-            {user && wishlists.length > 0 ? (
-              wishlists.map((wishlist, i) => (
-                <Wishlist key={i} {...wishlist} onDelete={deleteWishlist} />
-              ))
-            ) : (
-              <span>You have no wishlists.</span>
-            )}
+        <form id="create-wishlist-form" onSubmit={handleSubmit(createWishlist)}>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input type="text" name="name" id="name" required ref={register} />
           </div>
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <input
+              type="text"
+              name="description"
+              id="description"
+              ref={register}
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Create
+          </button>
+        </form>
+      </aside>
+
+      <div id="wishlists">
+        <h3>Your wishlists</h3>
+
+        <div>
+          {user && wishlists.length > 0 ? (
+            wishlists.map((wishlist, i) => (
+              <Wishlist key={i} {...wishlist} onDelete={deleteWishlist} />
+            ))
+          ) : (
+            <span>You have no wishlists.</span>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

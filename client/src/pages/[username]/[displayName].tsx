@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { api } from "../../helpers";
 import { useSession } from "../../store";
-import { Header, Product } from "../../components";
+import { Product } from "../../components";
 import { IWishlist, PageProps } from "../../types";
 
 interface Inputs {
@@ -47,9 +47,7 @@ export default function Wishlist({ router }: PageProps) {
 
   if (wishlist) {
     return (
-      <div id="page" className="wishlist-page">
-        <Header router={router} />
-
+      <div className="wishlist-page">
         <section id="info">
           <div id="wishlist-info">
             <h2>{wishlist.name}</h2>

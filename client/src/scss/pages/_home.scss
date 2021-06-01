@@ -1,13 +1,11 @@
 .home-page {
-  main {
-    display: grid;
-    grid-template-columns: 20% 1fr;
-    gap: 10px;
+  display: grid;
+  grid-template-columns: 20% 1fr;
+  gap: 10px;
 
-    @media screen and (max-width: $small) {
-      display: flex;
-      flex-direction: column;
-    }
+  @media screen and (max-width: $small) {
+    display: flex;
+    flex-direction: column;
   }
 
   aside {

@@ -1,36 +1,34 @@
 .account-page {
+  width: 50%;
+  margin: 0 auto;
+
   main {
-    width: 50%;
-    margin: 0 auto;
-
-    & > div {
-      h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        @include subtitle;
-      }
-
-      #data {
-        display: flex;
-        flex-direction: column;
-        padding: 0 100px;
-
-        .row {
-          display: flex;
-          justify-content: space-between;
-        }
-      }
-
-      @media screen and (max-width: $small) {
-        #data {
-          padding: 0;
-        }
-      }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      @include subtitle;
     }
 
-    @media screen and (max-width: $small) {
-      margin-top: 10px;
-      width: 90%;
+    #data {
+      display: flex;
+      flex-direction: column;
+      padding: 0 100px;
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  @media screen and (max-width: $small) {
+    margin-top: 10px;
+    width: 90%;
+
+    main {
+      #data {
+        padding: 0;
+      }
     }
   }
 }
