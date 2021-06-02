@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -21,6 +22,10 @@ export default function Signin() {
 
   return (
     <div id="page" className="signin-page">
+      <Head>
+        <title>Sign In to Wishlify</title>
+      </Head>
+
       <h1>Wishlify</h1>
 
       <form id="signin-email-form" onSubmit={handleSubmit(signinByEmail)}>

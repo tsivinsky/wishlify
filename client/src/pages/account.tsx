@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useSession } from "../store";
 import { PageProps } from "../types";
 
@@ -6,6 +7,10 @@ export default function Account({}: PageProps) {
 
   return (
     <div className="account-page">
+      <Head>
+        <title>Account - Wishlify</title>
+      </Head>
+
       <main>
         <h2>Your account data</h2>
 

@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -45,6 +46,10 @@ export default function Home({}: PageProps) {
 
   return (
     <div className="home-page">
+      <Head>
+        <title>Home - Wishlify</title>
+      </Head>
+
       <aside>
         <h3>Create new wishlist</h3>
 

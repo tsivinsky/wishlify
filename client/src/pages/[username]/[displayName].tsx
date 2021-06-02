@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -48,6 +49,12 @@ export default function Wishlist({ router }: PageProps) {
   if (wishlist) {
     return (
       <div className="wishlist-page">
+        <Head>
+          <title>
+            {wishlist.name} by {username} on Wishlify
+          </title>
+        </Head>
+
         <section id="info">
           <div id="wishlist-info">
             <h2>{wishlist.name}</h2>
