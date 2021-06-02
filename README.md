@@ -1,3 +1,7 @@
 # Wishlify
 
-Wishlify is a web application that allows you to save all the products you want to buy in one place.
+<div align="center">
+
+<img src="assets/logo-full.png" alt="Wishlify Logo" width="100%">
+
+</div>
