@@ -4,6 +4,21 @@ header {
   justify-content: space-between;
   align-items: center;
 
+  #name {
+    #logo {
+      display: none;
+    }
+
+    h1 {
+      font-family: "Pacifico";
+      font-weight: normal;
+
+      &::first-letter {
+        color: $primary;
+      }
+    }
+  }
+
   nav {
     display: flex;
     justify-content: space-between;
@@ -14,8 +29,18 @@ header {
   @media screen and (max-width: $small) {
     padding: 10px 15px;
 
+    #name {
+      #logo {
+        display: block;
+      }
+
+      h1 {
+        display: none;
+      }
+    }
+
     nav {
-      gap: 10px;
+      gap: 15px;
     }
   }
 }

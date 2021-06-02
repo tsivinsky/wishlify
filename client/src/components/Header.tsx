@@ -15,7 +15,17 @@ export const Header: React.FC<{ router: NextRouter }> = ({ router }) => {
 
   return (
     <header>
-      <h1>Wishlify</h1>
+      <div id="name">
+        <img
+          src="/assets/logo.svg"
+          id="logo"
+          width="64px"
+          height="64px"
+          alt="logo"
+        />
+
+        <h1>Wishlify</h1>
+      </div>
 
       <nav>
         <Link href="/home">Home</Link>
