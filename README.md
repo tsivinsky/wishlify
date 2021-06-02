@@ -2,6 +2,6 @@
 
 <div align="center">
 
-<img src="assets/logo-full.png" alt="Wishlify Logo" width="100%">
+<img src="assets/1200x800/logo.png" alt="Wishlify Logo">
 
 </div>
