@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -32,6 +33,16 @@ type Session struct {
 
 	UUID   string `json:"uuid"`
 	UserID uint   `json:"userId"`
+}
+
+type Wishlist struct {
+	Model
+
+	UUID        string `json:"uuid"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	UserID      uint   `json:"-"`
+	User        User   `json:"user,omitzero"`
 }
 
 func sendJSON(w http.ResponseWriter, data any, status int) error {
@@ -83,11 +94,18 @@ func main() {
 		log.Fatalf("gorm.Open failed: %v\n", err)
 	}
 
-	if err := db.AutoMigrate(&User{}, &Session{}); err != nil {
+	if err := db.AutoMigrate(&User{}, &Session{}, &Wishlist{}); err != nil {
 		log.Fatalf("db.AutoMigrate failed: %v\n", err)
 	}
 
 	mux := http.NewServeMux()
+
+	// this handler handles all routes with OPTIONS method
+	// for some reason when doing POST request (any other than GET i imagine), server says fuck off to browser. idk
+	// TODO: fix later. i think something's wrong in httpHandler function
+	mux.HandleFunc("OPTIONS /", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		return nil
+	}))
 
 	mux.HandleFunc("GET /", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
 		c, err := r.Cookie("sessionid")
@@ -96,10 +114,6 @@ func main() {
 		}
 		fmt.Fprint(w, c.Value)
 
-		return nil
-	}))
-
-	mux.HandleFunc("OPTIONS /register", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}))
 
@@ -154,10 +168,6 @@ func main() {
 		})
 
 		return sendJSON(w, struct{ ok bool }{true}, 201)
-	}))
-
-	mux.HandleFunc("OPTIONS /login", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
-		return nil
 	}))
 
 	mux.HandleFunc("POST /login", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
@@ -239,6 +249,87 @@ func main() {
 		}
 
 		return sendJSON(w, user, 200)
+	}))
+
+	mux.HandleFunc("GET /wishlists", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		user, _, err := getUserFromRequest(r, db)
+		if err != nil {
+			return err
+		}
+
+		wishlists := []Wishlist{}
+		if tx := db.Find(&wishlists, "user_id = ?", user.ID); tx.Error != nil {
+			return fmt.Errorf("couldn't find wishlists: %v", tx.Error)
+		}
+
+		return sendJSON(w, wishlists, 200)
+	}))
+
+	mux.HandleFunc("POST /wishlists", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		user, _, err := getUserFromRequest(r, db)
+		if err != nil {
+			return err
+		}
+
+		var body struct {
+			Name        string `json:"name"`
+			Description string `json:"description"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			return fmt.Errorf("json decoding request body failed: %v", err)
+		}
+
+		if body.Name == "" {
+			return fmt.Errorf("invalid request")
+		}
+
+		uid, err := uuid.NewV7()
+		if err != nil {
+			return fmt.Errorf("generating uuid failed: %v", err)
+		}
+
+		wishlist := Wishlist{
+			Name:        body.Name,
+			Description: body.Description,
+			UUID:        uid.String(),
+			UserID:      user.ID,
+		}
+		if tx := db.Create(&wishlist); tx.Error != nil {
+			return fmt.Errorf("adding wishlist to db failed: %v", tx.Error)
+		}
+
+		return sendJSON(w, wishlist, 201)
+	}))
+
+	mux.HandleFunc("GET /wishlists/{uuid}", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		uid := r.PathValue("uuid")
+
+		var wishlist Wishlist
+		if tx := db.Preload("User").First(&wishlist, "uuid = ?", uid); tx.Error != nil {
+			return fmt.Errorf("wishlist not found: %v", tx.Error)
+		}
+
+		return sendJSON(w, wishlist, 200)
+	}))
+
+	mux.HandleFunc("DELETE /wishlists/{id}", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		idStr := r.PathValue("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return fmt.Errorf("parsing id to int failed: %v", err)
+		}
+
+		user, _, err := getUserFromRequest(r, db)
+		if err != nil {
+			return err
+		}
+
+		var wishlist Wishlist
+		if tx := db.Delete(&wishlist, id).Where("user_id = ?", user.ID); tx.Error != nil {
+			return fmt.Errorf("wishlist not found: %v", tx.Error)
+		}
+
+		return sendJSON(w, wishlist, 200)
 	}))
 
 	if err := http.ListenAndServe(":5000", runServer(mux, corsMiddleware)); err != nil {
