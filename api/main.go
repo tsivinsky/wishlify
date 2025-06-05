@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -12,6 +14,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 )
 
 type Model struct {
@@ -38,11 +42,40 @@ type Session struct {
 type Wishlist struct {
 	Model
 
-	UUID        string `json:"uuid"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	UserID      uint   `json:"-"`
-	User        User   `json:"user,omitzero"`
+	UUID        string    `json:"uuid"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	UserID      uint      `json:"-"`
+	User        User      `json:"user,omitzero"`
+	Products    []Product `json:"products"`
+}
+
+func (w *Wishlist) AfterDelete(tx *gorm.DB) (err error) {
+	tx.Clauses(clause.Returning{}).Where("wishlist_id = ?", w.ID).Delete(&Product{})
+	return
+}
+
+type Product struct {
+	Model
+
+	Name       string `json:"name"`
+	Price      int    `json:"price"`
+	Currency   string `json:"currency"`
+	ImageID    string `json:"imageId"`
+	WishlistID uint   `json:"-"`
+	UserID     uint   `json:"-"`
+}
+
+func (p *Product) AfterDelete(tx *gorm.DB) (err error) {
+	tx.Clauses(clause.Returning{}).Where("uuid = ?", p.ImageID).Delete(&Image{})
+	return
+}
+
+type Image struct {
+	UUID      string    `json:"uuid" gorm:"primarykey"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Data      []byte    `json:"-"`
 }
 
 func sendJSON(w http.ResponseWriter, data any, status int) error {
@@ -89,12 +122,24 @@ func corsMiddleware(w http.ResponseWriter, r *http.Request) error {
 }
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("./wishlify.db"))
+	dbLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
+			Colorful:                  true,
+			IgnoreRecordNotFoundError: false,
+			ParameterizedQueries:      false,
+		},
+	)
+	db, err := gorm.Open(sqlite.Open("./wishlify.db"), &gorm.Config{
+		Logger: dbLogger,
+	})
 	if err != nil {
 		log.Fatalf("gorm.Open failed: %v\n", err)
 	}
 
-	if err := db.AutoMigrate(&User{}, &Session{}, &Wishlist{}); err != nil {
+	if err := db.AutoMigrate(&User{}, &Session{}, &Wishlist{}, &Product{}, &Image{}); err != nil {
 		log.Fatalf("db.AutoMigrate failed: %v\n", err)
 	}
 
@@ -258,7 +303,7 @@ func main() {
 		}
 
 		wishlists := []Wishlist{}
-		if tx := db.Find(&wishlists, "user_id = ?", user.ID); tx.Error != nil {
+		if tx := db.Preload("Products").Find(&wishlists, "user_id = ?", user.ID); tx.Error != nil {
 			return fmt.Errorf("couldn't find wishlists: %v", tx.Error)
 		}
 
@@ -293,6 +338,7 @@ func main() {
 			Description: body.Description,
 			UUID:        uid.String(),
 			UserID:      user.ID,
+			Products:    []Product{},
 		}
 		if tx := db.Create(&wishlist); tx.Error != nil {
 			return fmt.Errorf("adding wishlist to db failed: %v", tx.Error)
@@ -305,7 +351,7 @@ func main() {
 		uid := r.PathValue("uuid")
 
 		var wishlist Wishlist
-		if tx := db.Preload("User").First(&wishlist, "uuid = ?", uid); tx.Error != nil {
+		if tx := db.Preload("User").Preload("Products").First(&wishlist, "uuid = ?", uid); tx.Error != nil {
 			return fmt.Errorf("wishlist not found: %v", tx.Error)
 		}
 
@@ -325,11 +371,119 @@ func main() {
 		}
 
 		var wishlist Wishlist
-		if tx := db.Delete(&wishlist, id).Where("user_id = ?", user.ID); tx.Error != nil {
+		if tx := db.First(&wishlist, id).Where("user_id = ?", user.ID).Delete(&wishlist, id); tx.Error != nil {
 			return fmt.Errorf("wishlist not found: %v", tx.Error)
 		}
 
 		return sendJSON(w, wishlist, 200)
+	}))
+
+	mux.HandleFunc("POST /wishlists/{id}/products", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		user, _, err := getUserFromRequest(r, db)
+		if err != nil {
+			return err
+		}
+
+		idStr := r.PathValue("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return fmt.Errorf("parsing id to int failed: %v", err)
+		}
+
+		var wishlist Wishlist
+		if tx := db.First(&wishlist, id); tx.Error != nil {
+			return fmt.Errorf("wishlist not found: %v", tx.Error)
+		}
+
+		if user.ID != wishlist.UserID {
+			return fmt.Errorf("can't add products to wishlist you didn't create")
+		}
+
+		var body struct {
+			Name     string `json:"name"`
+			Price    int    `json:"price"`
+			Currency string `json:"currency"`
+			ImageID  string `json:"imageId"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			return fmt.Errorf("json decoding failed: %v", err)
+		}
+
+		if body.Name == "" || body.Price == 0 || body.Currency == "" || body.ImageID == "" {
+			return fmt.Errorf("invalid request")
+		}
+
+		product := Product{
+			Name:       body.Name,
+			Price:      body.Price,
+			Currency:   body.Currency,
+			ImageID:    body.ImageID,
+			WishlistID: wishlist.ID,
+			UserID:     user.ID,
+		}
+		if tx := db.Create(&product); tx.Error != nil {
+			return fmt.Errorf("adding product to db failed: %v", tx.Error)
+		}
+
+		return sendJSON(w, product, 201)
+	}))
+
+	mux.HandleFunc("DELETE /products/{id}", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		idStr := r.PathValue("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return fmt.Errorf("parsing id to int failed: %v", err)
+		}
+
+		user, _, err := getUserFromRequest(r, db)
+		if err != nil {
+			return err
+		}
+
+		product := Product{}
+		if tx := db.First(&product, id).Where("user_id = ?", user.ID).Delete(&product, id); tx.Error != nil {
+			return fmt.Errorf("deleting product failed: %v", tx.Error)
+		}
+
+		return sendJSON(w, product, 200)
+	}))
+
+	mux.HandleFunc("POST /images", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		data, err := io.ReadAll(r.Body)
+		if err != nil {
+			return fmt.Errorf("error reading request body: %v", err)
+		}
+
+		uid, err := uuid.NewV7()
+		if err != nil {
+			return fmt.Errorf("generating uuid failed: %v", err)
+		}
+
+		img := Image{
+			UUID: uid.String(),
+			Data: data,
+		}
+		if tx := db.Create(&img); tx.Error != nil {
+			return fmt.Errorf("adding image to db failed: %v", tx.Error)
+		}
+
+		return sendJSON(w, img, 201)
+	}))
+
+	mux.HandleFunc("GET /images/{uuid}", httpHandler(func(w http.ResponseWriter, r *http.Request) error {
+		uid := r.PathValue("uuid")
+
+		var img Image
+		if tx := db.First(&img, "uuid = ?", uid); tx.Error != nil {
+			return fmt.Errorf("image not found: %v", tx.Error)
+		}
+
+		_, err := w.Write(img.Data)
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}))
 
 	if err := http.ListenAndServe(":5000", runServer(mux, corsMiddleware)); err != nil {

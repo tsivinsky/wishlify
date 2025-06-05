@@ -4,11 +4,16 @@ import { useUserQuery } from "@/api/user";
 import {
   useDeleteWishlistMutation,
   useWishlistQuery,
+  wishlistQuery,
   wishlistsQuery,
 } from "@/api/wishlist";
 import { Button } from "@/components/Button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
+import { ProductModal } from "./ProductModal";
+import Image from "next/image";
+import { getApiImageUrl } from "@/utils/image";
+import { useDeleteProductMutation } from "@/api/product";
 
 export default function Wishlist() {
   const queryClient = useQueryClient();
@@ -18,16 +23,32 @@ export default function Wishlist() {
   const { data: user } = useUserQuery();
   const { data: wishlist } = useWishlistQuery(params.uuid);
 
-  const deleteMutation = useDeleteWishlistMutation();
+  const deleteWishlistMutation = useDeleteWishlistMutation();
+  const deleteProductMutation = useDeleteProductMutation();
 
-  const handleDelete = () => {
+  const isOwnerView =
+    (user && wishlist && user.id === wishlist.user?.id) ?? false;
+
+  const handleDeleteWishlist = () => {
     if (!window.confirm("Are you sure you want to delete wishlist?")) return;
     if (!wishlist) return;
 
-    deleteMutation.mutate(wishlist.id, {
+    deleteWishlistMutation.mutate(wishlist.id, {
       onSuccess() {
         queryClient.invalidateQueries(wishlistsQuery());
         router.push("/");
+      },
+    });
+  };
+
+  const handleDeleteProduct = (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+    if (!wishlist) return;
+
+    deleteProductMutation.mutate(id, {
+      onSuccess() {
+        queryClient.invalidateQueries(wishlistQuery(wishlist.uuid));
       },
     });
   };
@@ -38,14 +59,40 @@ export default function Wishlist() {
       {wishlist?.description && (
         <p className="text-lg mt-4">{wishlist.description}</p>
       )}
-      {user && wishlist && user.id === wishlist.user?.id && (
-        <Button
-          className="text-white bg-red-500 border-red-500 mt-4"
-          onClick={handleDelete}
-        >
-          Delete Wishlist
-        </Button>
-      )}
+      <div className="flex items-center gap-3 mt-4">
+        {isOwnerView && (
+          <Button
+            className="text-white bg-red-500 border-red-500"
+            loading={deleteWishlistMutation.isPending}
+            onClick={handleDeleteWishlist}
+          >
+            Delete Wishlist
+          </Button>
+        )}
+        {isOwnerView && wishlist && <ProductModal wishlist={wishlist} />}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-3">
+        {wishlist?.products.map((product) => (
+          <div key={product.id} className="flex flex-col">
+            <Image
+              src={getApiImageUrl(product.imageId)}
+              alt=""
+              width={300}
+              height={300}
+            />
+            <p>{product.name}</p>
+            {isOwnerView && (
+              <Button
+                size="small"
+                className="w-fit mt-2 text-red-500"
+                onClick={() => handleDeleteProduct(product.id)}
+              >
+                Delete
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -6,3 +6,7 @@
   margin: 0 auto;
   padding: 0 16px;
 }
+
+@utility z-modal {
+  z-index: 10000;
+}
